@@ -1,0 +1,29 @@
+/*
+ * 统一封装 logger
+ * @Author: Jiyu Shao 
+ * @Date: 2021-06-29 18:46:18 
+ * @Last Modified by: Jiyu Shao
+ * @Last Modified time: 2021-06-29 19:03:36
+ */
+import 'package:logger/logger.dart';
+
+var logger = Logger(
+  printer: PrefixPrinter(PrettyPrinter(
+      methodCount: 2, // number of method calls to be displayed
+      errorMethodCount: 8, // number of method calls if stacktrace is provided
+      lineLength: 120, // width of the output
+      colors: true, // Colorful log messages
+      printEmojis: true, // Print an emoji for each log message
+      printTime: true // Should each log print contain a timestamp
+      )),
+);
+
+var loggerNoStack = Logger(
+    printer: PrettyPrinter(
+        methodCount: 0, // number of method calls to be displayed
+        errorMethodCount: 8, // number of method calls if stacktrace is provided
+        lineLength: 120, // width of the output
+        colors: true, // Colorful log messages
+        printEmojis: true, // Print an emoji for each log message
+        printTime: true // Should each log print contain a timestamp),
+        ));
