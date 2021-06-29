@@ -1,5 +1,5 @@
-name: flutter_browser
-description: A new Flutter project.
+name: pickle_browser
+description: Yet Another Browser.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -32,6 +32,9 @@ dependencies:
 
 dev_dependencies:
   flutter_native_splash: ^1.2.0
+  # Conflict with flutter_native_splash for now, 
+  # see https://github.com/fluttercommunity/flutter_launcher_icons/issues/262
+  # flutter_launcher_icons: ^0.9.0
   flutter_test:
     sdk: flutter
 
