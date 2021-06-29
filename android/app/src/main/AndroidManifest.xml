@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_browser">
+    package="com.example.pickle_browser">
    <application
-        android:label="flutter_browser"
+        android:label="Pickle Browser"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

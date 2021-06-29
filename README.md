@@ -1,4 +1,4 @@
-# flutter_browser
+# pickle_browser
 
 A new Flutter project.
 
