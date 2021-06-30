@@ -6,7 +6,7 @@
  * @Last Modified time: 2021-06-29 17:52:43 
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/configs/app_theme.dart';
+import 'package:pickle_browser/models/app_theme.dart';
 import 'package:pickle_browser/widgets/title_view/title_view.dart';
 
 class SearchScreen extends StatefulWidget {

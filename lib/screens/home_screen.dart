@@ -3,10 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-29 19:36:46
+ * @Last Modified time: 2021-06-30 16:04:31
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/configs/app_theme.dart';
+import 'package:pickle_browser/models/app_theme.dart';
 import 'package:pickle_browser/screens/search_screen.dart';
 import 'package:pickle_browser/widgets/tab_bar/tab_bar.dart' as TabBar;
 import 'package:pickle_browser/models/tab_bar.dart' as TabBarModel;
@@ -88,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           tabList: tabList,
           handleChange: (TabBarModel.TabItem tabItemData) {
             logger.v('切换 Tab', tabItemData.toJson());
+            // Navigator.of(context).pushNamed('/popup_menus');
             animationController?.reverse().then<dynamic>((data) {
               if (!mounted) {
                 return;

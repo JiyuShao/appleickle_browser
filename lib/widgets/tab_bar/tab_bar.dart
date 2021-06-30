@@ -3,10 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-29 19:25:42
+ * @Last Modified time: 2021-06-30 14:13:16
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/configs/app_theme.dart';
+import 'package:pickle_browser/models/app_theme.dart';
 import 'package:pickle_browser/models/tab_bar.dart' as TabBarModel;
 
 import 'tab_item.dart';
@@ -35,46 +35,40 @@ class _TabBarState extends State<TabBar> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.bottomCenter,
-      children: <Widget>[
-        AnimatedBuilder(
-          animation: animationController!,
-          builder: (BuildContext context, Widget? child) {
-            return Transform(
-              transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-              child: Container(
-                color: AppTheme.white,
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 62,
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8, right: 8, top: 4),
-                        child: Row(
-                          children: widget.tabList!.map((currentTab) {
-                            return Expanded(
-                              child: TabItem(
-                                  tabItemData: currentTab,
-                                  removeAllSelect: () {
-                                    switchTab(currentTab);
-                                  }),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+    return AnimatedBuilder(
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
+        return Transform(
+          transform: Matrix4.translationValues(0.0, 0.0, 0.0),
+          child: Container(
+            color: AppTheme.white,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 62,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, right: 8, top: 4),
+                    child: Row(
+                      children: widget.tabList!.map((currentTab) {
+                        return Expanded(
+                          child: TabItem(
+                              tabItemData: currentTab,
+                              removeAllSelect: () {
+                                switchTab(currentTab);
+                              }),
+                        );
+                      }).toList(),
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).padding.bottom,
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-      ],
+                SizedBox(
+                  height: MediaQuery.of(context).padding.bottom,
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
