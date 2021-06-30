@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pickle_browser/configs/app_theme.dart';
-import 'package:pickle_browser/screens/home_screen.dart';
+import 'package:pickle_browser/models/app_theme.dart';
 
-void main() async{
+import 'utils/routes/routes_generator.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
@@ -30,7 +31,9 @@ class MyApp extends StatelessWidget {
         textTheme: AppTheme.textTheme,
         platform: TargetPlatform.iOS,
       ),
-      home: HomeScreen(),
+      // Initially display FirstPage
+      initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

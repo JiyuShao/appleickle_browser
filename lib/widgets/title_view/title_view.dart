@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/configs/app_theme.dart';
+import 'package:pickle_browser/models/app_theme.dart';
 
 class TitleView extends StatelessWidget {
   final String titleTxt;

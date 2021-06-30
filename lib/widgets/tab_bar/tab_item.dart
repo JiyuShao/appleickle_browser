@@ -3,10 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 19:18:14 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-29 19:39:11
+ * @Last Modified time: 2021-06-30 15:31:49
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/configs/app_theme.dart';
+import 'package:pickle_browser/models/app_theme.dart';
 import 'package:pickle_browser/models/tab_bar.dart' as TabBarModel;
 
 class TabItem extends StatefulWidget {
@@ -24,7 +24,7 @@ class _TabItemState extends State<TabItem> with TickerProviderStateMixin {
   void initState() {
     widget.tabItemData?.animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: AppTheme.baseAnimationDuration ~/ 3),
+      duration: const Duration(milliseconds: 50),
     )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           if (!mounted) return;
