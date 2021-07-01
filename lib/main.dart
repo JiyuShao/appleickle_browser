@@ -26,12 +26,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pickle Browser',
       debugShowCheckedModeBanner: true,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: AppTheme.textTheme,
-        platform: TargetPlatform.iOS,
-      ),
-      // Initially display FirstPage
+      theme: AppTheme.appThemeData,
+      // theme: ThemeData.dark(),
       initialRoute: '/',
       onGenerateRoute: RouteGenerator.generateRoute,
     );

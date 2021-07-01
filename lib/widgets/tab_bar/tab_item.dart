@@ -3,137 +3,155 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 19:18:14 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-30 15:31:49
+ * @Last Modified time: 2021-07-01 13:05:29
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme.dart';
-import 'package:pickle_browser/models/tab_bar.dart' as TabBarModel;
+import 'package:pickle_browser/models/tab_bar.dart' as tab_bar_model;
 
 class TabItem extends StatefulWidget {
-  const TabItem({Key? key, this.tabItemData, this.removeAllSelect})
+  const TabItem(
+      {Key? key,
+      required this.tabItemData,
+      required this.handleTap,
+      required this.handleChange})
       : super(key: key);
 
-  final TabBarModel.TabItem? tabItemData;
-  final Function()? removeAllSelect;
+  // 当前Tab数据
+  final tab_bar_model.TabItem tabItemData;
+  // 触发点击逻辑
+  final Function() handleTap;
+  // 触发切换逻辑
+  final Function() handleChange;
   @override
   _TabItemState createState() => _TabItemState();
 }
 
 class _TabItemState extends State<TabItem> with TickerProviderStateMixin {
+  // 动画控制器
+  late AnimationController animationController;
+
   @override
   void initState() {
-    widget.tabItemData?.animationController = AnimationController(
+    this.animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 50),
     )..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
           if (!mounted) return;
-          widget.removeAllSelect!();
-          widget.tabItemData?.animationController?.reverse();
+          // 在切换动画执行结束后, 执行切换回调
+          widget.handleChange();
+          this.animationController.reverse();
         }
       });
     super.initState();
   }
 
-  void setAnimation() {
-    widget.tabItemData?.animationController?.forward();
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  // 处理 Tab 点击逻辑
+  void handleTap() {
+    if (widget.tabItemData.isSelected) {
+      return;
+    }
+    // 如果没禁止切换的情况下, 执行切换动画
+    if (!widget.tabItemData.diableChange) {
+      this.animationController.forward();
+    }
+    // 执行点击回调
+    widget.handleTap();
   }
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1,
-      child: Center(
-        child: InkWell(
-          splashColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          onTap: () {
-            if (!widget.tabItemData!.isSelected) {
-              setAnimation();
-            }
-          },
-          child: IgnorePointer(
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                ScaleTransition(
+      child: GestureDetector(
+        onTap: () {
+          handleTap();
+        },
+        child: Center(
+          child: Stack(
+            alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              ScaleTransition(
+                alignment: Alignment.center,
+                scale: Tween<double>(begin: 0.88, end: 1.0).animate(
+                    CurvedAnimation(
+                        parent: this.animationController,
+                        curve:
+                            Interval(0.1, 1.0, curve: Curves.fastOutSlowIn))),
+                child: Image.asset(widget.tabItemData.isSelected
+                    ? widget.tabItemData.selectedImagePath
+                    : widget.tabItemData.imagePath),
+              ),
+              Positioned(
+                top: 4,
+                left: 6,
+                right: 0,
+                child: ScaleTransition(
                   alignment: Alignment.center,
-                  scale: Tween<double>(begin: 0.88, end: 1.0).animate(
+                  scale: Tween<double>(begin: 0.0, end: 1.0).animate(
                       CurvedAnimation(
-                          parent: widget.tabItemData!.animationController!,
+                          parent: this.animationController,
                           curve:
-                              Interval(0.1, 1.0, curve: Curves.fastOutSlowIn))),
-                  child: Image.asset(widget.tabItemData!.isSelected
-                      ? widget.tabItemData!.selectedImagePath
-                      : widget.tabItemData!.imagePath),
-                ),
-                Positioned(
-                  top: 4,
-                  left: 6,
-                  right: 0,
-                  child: ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.tabItemData!.animationController!,
-                            curve: Interval(0.2, 1.0,
-                                curve: Curves.fastOutSlowIn))),
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: AppTheme.primary,
-                        shape: BoxShape.circle,
-                      ),
+                              Interval(0.2, 1.0, curve: Curves.fastOutSlowIn))),
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 6,
-                  bottom: 8,
-                  child: ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.tabItemData!.animationController!,
-                            curve: Interval(0.5, 0.8,
-                                curve: Curves.fastOutSlowIn))),
-                    child: Container(
-                      width: 4,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: AppTheme.primary,
-                        shape: BoxShape.circle,
-                      ),
+              ),
+              Positioned(
+                top: 0,
+                left: 6,
+                bottom: 8,
+                child: ScaleTransition(
+                  alignment: Alignment.center,
+                  scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                          parent: this.animationController,
+                          curve:
+                              Interval(0.5, 0.8, curve: Curves.fastOutSlowIn))),
+                  child: Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 6,
-                  right: 8,
-                  bottom: 0,
-                  child: ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.tabItemData!.animationController!,
-                            curve: Interval(0.5, 0.6,
-                                curve: Curves.fastOutSlowIn))),
-                    child: Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: AppTheme.primary,
-                        shape: BoxShape.circle,
-                      ),
+              ),
+              Positioned(
+                top: 6,
+                right: 8,
+                bottom: 0,
+                child: ScaleTransition(
+                  alignment: Alignment.center,
+                  scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                          parent: this.animationController,
+                          curve:
+                              Interval(0.5, 0.6, curve: Curves.fastOutSlowIn))),
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.circle,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
