@@ -3,10 +3,9 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-30 15:05:00
+ * @Last Modified time: 2021-07-01 13:06:54
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme.dart';
 
 class NotFoundScreen extends StatefulWidget {
   @override
@@ -18,7 +17,7 @@ class _NotFoundScreenState extends State<NotFoundScreen>
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppTheme.background,
+      color: Theme.of(context).backgroundColor,
       child: Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(

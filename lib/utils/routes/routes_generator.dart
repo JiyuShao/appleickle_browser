@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-30 11:14:55 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-30 15:28:20
+ * @Last Modified time: 2021-06-30 17:58:06
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/routes.dart';
@@ -11,7 +11,7 @@ import 'package:pickle_browser/utils/logger.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
-    logger.d('RouteGenerator 切换路由中', {
+    loggerNoStack.d('RouteGenerator 切换路由中', {
       "setting": {
         'name': settings.name,
         'arguments': settings.arguments,
@@ -33,7 +33,7 @@ class RouteGenerator {
         return result;
       }
     } catch (e) {
-      logger.e('RouteGenerator 切换路径出错', {
+      loggerNoStack.e('RouteGenerator 切换路径失败', {
         "error": e,
         "settings": {
           'name': settings.name,
@@ -42,7 +42,7 @@ class RouteGenerator {
       });
       return errorRouteConfig.routeGenerator(settings);
     }
-    logger.e('RouteGenerator 未找到当前路径', {
+    loggerNoStack.e('RouteGenerator 未找到当前路径', {
       "settings": {
         'name': settings.name,
         'arguments': settings.arguments,

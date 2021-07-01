@@ -3,86 +3,81 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-30 14:13:16
+ * @Last Modified time: 2021-07-01 13:05:01
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/app_theme.dart';
-import 'package:pickle_browser/models/tab_bar.dart' as TabBarModel;
+import 'package:pickle_browser/models/tab_bar.dart' as tab_bar_model;
 
 import 'tab_item.dart';
 
 class TabBar extends StatefulWidget {
-  const TabBar({Key? key, this.tabList, this.handleChange}) : super(key: key);
+  const TabBar({Key? key, required this.tabList}) : super(key: key);
 
-  final Function(TabBarModel.TabItem tabItemData)? handleChange;
-  final List<TabBarModel.TabItem>? tabList;
+  // tabbar 数据列表
+  final List<tab_bar_model.TabItem> tabList;
+
   @override
   _TabBarState createState() => _TabBarState();
 }
 
 class _TabBarState extends State<TabBar> with TickerProviderStateMixin {
-  AnimationController? animationController;
-
-  @override
-  void initState() {
-    animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: AppTheme.baseAnimationDuration),
-    );
-    animationController?.forward();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: animationController!,
-      builder: (BuildContext context, Widget? child) {
-        return Transform(
-          transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-          child: Container(
-            color: AppTheme.white,
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 62,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8, right: 8, top: 4),
-                    child: Row(
-                      children: widget.tabList!.map((currentTab) {
-                        return Expanded(
-                          child: TabItem(
-                              tabItemData: currentTab,
-                              removeAllSelect: () {
-                                switchTab(currentTab);
-                              }),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).padding.bottom,
-                )
-              ],
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 62,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Row(
+                children: widget.tabList.map((currentTab) {
+                  Widget currentItem = TabItem(
+                      tabItemData: currentTab,
+                      handleTap: () {
+                        handleTapTab(currentTab);
+                      },
+                      handleChange: () {
+                        handleSwitchTab(currentTab);
+                      });
+                  // 使用自定义的渲染器
+                  if (currentTab.builder != null) {
+                    currentItem = currentTab.builder!(context, currentItem);
+                  }
+                  return Expanded(
+                    child: currentItem,
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        );
-      },
+          )
+        ],
+      ),
     );
   }
 
-  void switchTab(TabBarModel.TabItem? tabItemData) {
+  // 切换 tab
+  void handleSwitchTab(tab_bar_model.TabItem currentTab) {
     if (!mounted) return;
     setState(() {
-      widget.tabList?.forEach((TabBarModel.TabItem tab) {
+      widget.tabList.forEach((tab_bar_model.TabItem tab) {
         tab.isSelected = false;
-        if (tabItemData!.index == tab.index) {
+        // 如果 tab 存在的情况下, 触发回调
+        if (currentTab.index == tab.index) {
           tab.isSelected = true;
-          // 触发
-          widget.handleChange!(tab);
+          // 没有禁止更改的情况下, 触发TabItem更改回调
+          if (!tab.diableChange && tab.handleChange != null)
+            tab.handleChange!(tab);
         }
       });
     });
+  }
+
+  // 点击 tab
+  void handleTapTab(tab_bar_model.TabItem currentTab) {
+    if (!mounted) return;
+    if (currentTab.handleTap != null) currentTab.handleTap!(currentTab);
   }
 }

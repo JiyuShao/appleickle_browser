@@ -5,12 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter_browser",
+            "name": "pickle_browser",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "flutter_browser (profile mode)",
+            "name": "pickle_browser (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"

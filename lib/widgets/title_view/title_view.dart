@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/app_theme.dart';
 
@@ -28,20 +27,15 @@ class TitleView extends StatelessWidget {
                 0.0, 30 * (1.0 - animation!.value), 0.0),
             child: Container(
               child: Padding(
-                padding: const EdgeInsets.only(left: 24, right: 24, bottom: 300),
+                padding:
+                    const EdgeInsets.only(left: 24, right: 24, bottom: 300),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: Text(
                         titleTxt,
                         textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontFamily: AppTheme.fontName,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                          letterSpacing: 0.5,
-                          color: AppTheme.lightText,
-                        ),
+                        style: Theme.of(context).textTheme.bodyText1,
                       ),
                     ),
                     InkWell(
@@ -55,20 +49,13 @@ class TitleView extends StatelessWidget {
                             Text(
                               subTxt,
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontFamily: AppTheme.fontName,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
-                                letterSpacing: 0.5,
-                                color: AppTheme.primary,
-                              ),
+                              style: Theme.of(context).textTheme.button,
                             ),
                             SizedBox(
                               height: 38,
                               width: 26,
                               child: Icon(
                                 Icons.arrow_forward,
-                                color: AppTheme.darkText,
                                 size: 18,
                               ),
                             ),

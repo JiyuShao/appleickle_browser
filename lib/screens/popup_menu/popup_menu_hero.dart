@@ -1,5 +1,23 @@
-import 'dart:ui' show lerpDouble;
-import 'package:flutter/widgets.dart';
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
+
+class PopupMenuHero extends Hero {
+  PopupMenuHero({required this.child})
+      : super(
+          tag: PopupMenuHero.POPUP_MENU_SCREEN_HERO_TAG,
+          // createRectTween: (begin, end) {
+          //   return PopupRectTween(begin: begin, end: end);
+          // },
+          child: child,
+        );
+
+  // 弹窗菜单Hero动画tag
+  static const String POPUP_MENU_SCREEN_HERO_TAG = 'POPUP_MENU_SCREEN_HERO_TAG';
+
+  // 自定义的子元素
+  final Widget child;
+}
 
 class PopupRectTween extends Tween<Rect?> {
   /// Creates a [Rect] tween.
