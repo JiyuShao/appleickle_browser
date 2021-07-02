@@ -3,25 +3,25 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-01 13:05:01
+ * @Last Modified time: 2021-07-02 18:00:13
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme.dart';
-import 'package:pickle_browser/models/tab_bar.dart' as tab_bar_model;
+import 'package:pickle_browser/models/bottom_bar.dart' as bottom_bar_model;
 
-import 'tab_item.dart';
+import 'bottom_bar_item.dart';
 
-class TabBar extends StatefulWidget {
-  const TabBar({Key? key, required this.tabList}) : super(key: key);
+class BottomBar extends StatefulWidget {
+  const BottomBar({Key? key, required this.bottomBarItemList})
+      : super(key: key);
 
   // tabbar 数据列表
-  final List<tab_bar_model.TabItem> tabList;
+  final List<bottom_bar_model.BottomBarItem> bottomBarItemList;
 
   @override
-  _TabBarState createState() => _TabBarState();
+  _BottomBarState createState() => _BottomBarState();
 }
 
-class _TabBarState extends State<TabBar> with TickerProviderStateMixin {
+class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,8 +33,8 @@ class _TabBarState extends State<TabBar> with TickerProviderStateMixin {
             child: Padding(
               padding: const EdgeInsets.only(top: 4),
               child: Row(
-                children: widget.tabList.map((currentTab) {
-                  Widget currentItem = TabItem(
+                children: widget.bottomBarItemList.map((currentTab) {
+                  Widget currentItem = BottomBarItem(
                       tabItemData: currentTab,
                       handleTap: () {
                         handleTapTab(currentTab);
@@ -59,15 +59,15 @@ class _TabBarState extends State<TabBar> with TickerProviderStateMixin {
   }
 
   // 切换 tab
-  void handleSwitchTab(tab_bar_model.TabItem currentTab) {
+  void handleSwitchTab(bottom_bar_model.BottomBarItem currentTab) {
     if (!mounted) return;
     setState(() {
-      widget.tabList.forEach((tab_bar_model.TabItem tab) {
+      widget.bottomBarItemList.forEach((bottom_bar_model.BottomBarItem tab) {
         tab.isSelected = false;
         // 如果 tab 存在的情况下, 触发回调
         if (currentTab.index == tab.index) {
           tab.isSelected = true;
-          // 没有禁止更改的情况下, 触发TabItem更改回调
+          // 没有禁止更改的情况下, 触发BottomBarItem更改回调
           if (!tab.diableChange && tab.handleChange != null)
             tab.handleChange!(tab);
         }
@@ -76,7 +76,7 @@ class _TabBarState extends State<TabBar> with TickerProviderStateMixin {
   }
 
   // 点击 tab
-  void handleTapTab(tab_bar_model.TabItem currentTab) {
+  void handleTapTab(bottom_bar_model.BottomBarItem currentTab) {
     if (!mounted) return;
     if (currentTab.handleTap != null) currentTab.handleTap!(currentTab);
   }

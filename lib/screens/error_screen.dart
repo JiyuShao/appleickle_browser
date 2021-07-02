@@ -3,9 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-01 13:06:49
+ * @Last Modified time: 2021-07-02 18:04:25
  */
 import 'package:flutter/material.dart';
+import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
 
 class ErrorScreen extends StatefulWidget {
   @override
@@ -16,13 +17,9 @@ class _ErrorScreenState extends State<ErrorScreen>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: Text('ERROR'),
-          )),
-    );
+    return PageScaffold(
+        body: Center(
+      child: Text('ERROR'),
+    ));
   }
 }

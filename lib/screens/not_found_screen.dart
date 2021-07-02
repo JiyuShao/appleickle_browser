@@ -3,9 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-01 13:06:54
+ * @Last Modified time: 2021-07-02 18:04:54
  */
 import 'package:flutter/material.dart';
+import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
 
 class NotFoundScreen extends StatefulWidget {
   @override
@@ -16,13 +17,9 @@ class _NotFoundScreenState extends State<NotFoundScreen>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      child: Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: Text('NOT_FOUND'),
-          )),
-    );
+    return PageScaffold(
+        body: Center(
+      child: Text('ERROR'),
+    ));
   }
 }
