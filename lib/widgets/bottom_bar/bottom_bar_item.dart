@@ -6,10 +6,10 @@
  * @Last Modified time: 2021-07-01 13:05:29
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/tab_bar.dart' as tab_bar_model;
+import 'package:pickle_browser/models/bottom_bar.dart' as tab_bar_model;
 
-class TabItem extends StatefulWidget {
-  const TabItem(
+class BottomBarItem extends StatefulWidget {
+  const BottomBarItem(
       {Key? key,
       required this.tabItemData,
       required this.handleTap,
@@ -17,16 +17,17 @@ class TabItem extends StatefulWidget {
       : super(key: key);
 
   // 当前Tab数据
-  final tab_bar_model.TabItem tabItemData;
+  final tab_bar_model.BottomBarItem tabItemData;
   // 触发点击逻辑
   final Function() handleTap;
   // 触发切换逻辑
   final Function() handleChange;
   @override
-  _TabItemState createState() => _TabItemState();
+  _BottomBarItemState createState() => _BottomBarItemState();
 }
 
-class _TabItemState extends State<TabItem> with TickerProviderStateMixin {
+class _BottomBarItemState extends State<BottomBarItem>
+    with TickerProviderStateMixin {
   // 动画控制器
   late AnimationController animationController;
 

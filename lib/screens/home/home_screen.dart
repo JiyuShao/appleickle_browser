@@ -3,14 +3,16 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-01 13:02:51
+ * @Last Modified time: 2021-07-02 17:56:43
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/app_theme.dart';
 import 'package:pickle_browser/screens/search_screen.dart';
 import 'package:pickle_browser/screens/popup_menu/popup_menu_hero.dart';
-import 'package:pickle_browser/widgets/tab_bar/tab_bar.dart' as tab_bar;
-import 'package:pickle_browser/models/tab_bar.dart' as tab_bar_model;
+import 'package:pickle_browser/models/bottom_bar.dart' as bottom_bar_model;
+import 'package:pickle_browser/widgets/bottom_bar/bottom_bar.dart'
+    as bottom_bar;
+import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,42 +22,20 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final AnimationController animationController;
 // 首页的Tab列表数据
-  late final List<tab_bar_model.TabItem> tabList = [
-    tab_bar_model.TabItem(
+  late final List<bottom_bar_model.BottomBarItem> bottomBarItemList = [
+    bottom_bar_model.BottomBarItem(
         index: 0,
         imagePath: 'assets/images/tabs/tab_1.png',
         selectedImagePath: 'assets/images/tabs/tab_1s.png',
         isSelected: true,
-        handleChange: (_) {
-          animationController.reverse().then<dynamic>((data) {
-            if (!mounted) {
-              return;
-            }
-            setState(() {
-              tabBody = SearchScreen(animationController: animationController);
-            });
-          });
+        handleTap: (_) {
+          animationController.reverse();
         }),
-    tab_bar_model.TabItem(
-        index: 1,
-        imagePath: 'assets/images/tabs/tab_2.png',
-        selectedImagePath: 'assets/images/tabs/tab_2s.png',
-        isSelected: false,
-        handleChange: (_) {
-          animationController.reverse().then<dynamic>((data) {
-            if (!mounted) {
-              return;
-            }
-            setState(() {
-              tabBody = SearchScreen(animationController: animationController);
-            });
-          });
-        }),
-    tab_bar_model.TabItem(
-      index: 2,
+    bottom_bar_model.BottomBarItem(
+      index: 1,
       diableChange: true,
-      imagePath: 'assets/images/tabs/tab_3.png',
-      selectedImagePath: 'assets/images/tabs/tab_3s.png',
+      imagePath: 'assets/images/tabs/tab_2.png',
+      selectedImagePath: 'assets/images/tabs/tab_2s.png',
       isSelected: false,
       handleTap: (_) {
         Navigator.of(context).pushNamed('/popup_menu');
@@ -64,19 +44,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     ),
   ];
 
-  Widget? tabBody;
-
   @override
   void initState() {
     // 设置选中的 Tab
-    tabList.forEach((tab_bar_model.TabItem tab) {
+    bottomBarItemList.forEach((bottom_bar_model.BottomBarItem tab) {
       tab.isSelected = false;
     });
-    tabList[0].isSelected = true;
+    bottomBarItemList[0].isSelected = true;
     animationController = AnimationController(
         duration: const Duration(milliseconds: AppTheme.baseAnimationDuration),
         vsync: this);
-    tabBody = SearchScreen(animationController: animationController);
     super.initState();
   }
 
@@ -88,49 +65,30 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: FutureBuilder<bool>(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox();
-            } else {
-              return Stack(
-                children: <Widget>[
-                  tabBody ??
-                      Container(
-                        color: Theme.of(context).backgroundColor,
-                      ),
-                  renderBottomBar(),
-                ],
-              );
-            }
-          },
-        ),
+    return PageScaffold(
+      bottomBar: bottom_bar.BottomBar(
+        bottomBarItemList: bottomBarItemList,
+      ),
+      body: FutureBuilder<bool>(
+        future: getData(),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (!snapshot.hasData) {
+            return SizedBox();
+          } else {
+            return Container(
+              width: 500,
+              height: 500,
+              color: Colors.amberAccent,
+            );
+          }
+        },
       ),
     );
   }
 
   // 获取异步的数据
   Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 200));
+    await Future<dynamic>.delayed(Duration(milliseconds: 200));
     return true;
-  }
-
-  // 渲染底部导航栏
-  Widget renderBottomBar() {
-    return Column(
-      children: <Widget>[
-        const Expanded(
-          child: SizedBox(),
-        ),
-        tab_bar.TabBar(
-          tabList: tabList,
-        ),
-      ],
-    );
   }
 }
