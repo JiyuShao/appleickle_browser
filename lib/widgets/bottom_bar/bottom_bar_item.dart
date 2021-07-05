@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 19:18:14 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-01 13:05:29
+ * @Last Modified time: 2021-07-02 18:38:19
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/bottom_bar.dart' as tab_bar_model;
@@ -76,7 +76,7 @@ class _BottomBarItemState extends State<BottomBarItem>
         },
         child: Center(
           child: Stack(
-            alignment: AlignmentDirectional.center,
+            alignment: Alignment.center,
             children: <Widget>[
               ScaleTransition(
                 alignment: Alignment.center,

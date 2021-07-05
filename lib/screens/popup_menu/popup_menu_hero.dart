@@ -6,9 +6,9 @@ class PopupMenuHero extends Hero {
   PopupMenuHero({required this.child})
       : super(
           tag: PopupMenuHero.POPUP_MENU_SCREEN_HERO_TAG,
-          // createRectTween: (begin, end) {
-          //   return PopupRectTween(begin: begin, end: end);
-          // },
+          createRectTween: (begin, end) {
+            return PopupRectTween(begin: begin, end: end);
+          },
           child: child,
         );
 
