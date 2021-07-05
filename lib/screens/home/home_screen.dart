@@ -3,16 +3,17 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-02 17:56:43
+ * @Last Modified time: 2021-07-05 10:18:46
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/app_theme.dart';
-import 'package:pickle_browser/screens/search_screen.dart';
 import 'package:pickle_browser/screens/popup_menu/popup_menu_hero.dart';
 import 'package:pickle_browser/models/bottom_bar.dart' as bottom_bar_model;
+import 'package:pickle_browser/screens/search/search_hero.dart';
 import 'package:pickle_browser/widgets/bottom_bar/bottom_bar.dart'
     as bottom_bar;
 import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
+import 'package:pickle_browser/widgets/search_bar/search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -76,9 +77,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             return SizedBox();
           } else {
             return Container(
-              width: 500,
-              height: 500,
-              color: Colors.amberAccent,
+              padding: EdgeInsets.all(20),
+              alignment: Alignment.center,
+              child: SearchHero(
+                child: SearchBar(),
+              ),
             );
           }
         },
