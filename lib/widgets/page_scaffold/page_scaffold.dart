@@ -13,11 +13,16 @@ class PageScaffold extends StatelessWidget {
   final Widget body;
   // 自定义的 bottomBar
   final BottomBar? bottomBar;
+  // 键盘弹出时是否 resize body
+  final bool? resizeToAvoidBottomInset;
+  // safeArea的配置
+  final Map<String, dynamic>? safeAreaOptions;
 
-  const PageScaffold({
-    required this.body,
-    this.bottomBar,
-  });
+  const PageScaffold(
+      {required this.body,
+      this.bottomBar,
+      this.resizeToAvoidBottomInset,
+      this.safeAreaOptions});
 
   // 暴露构建响应式的安全的页面
   static Widget responsive({required LayoutWidgetBuilder builder}) {
@@ -49,8 +54,10 @@ class PageScaffold extends StatelessWidget {
     if (bottomBar != null) pageBody.add(bottomBar!);
 
     return Scaffold(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: Theme.of(context).backgroundColor,
       body: SafeArea(
+        bottom: safeAreaOptions?['bottom'] == true,
         child: Column(
           children: pageBody,
         ),
