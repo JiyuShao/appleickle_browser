@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-05 10:18:46
+ * @Last Modified time: 2021-07-06 19:53:14
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/app_theme.dart';
@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  late final AnimationController animationController;
+  late final AnimationController _animationController;
 // 首页的Tab列表数据
   late final List<bottom_bar_model.BottomBarItem> bottomBarItemList = [
     bottom_bar_model.BottomBarItem(
@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         selectedImagePath: 'assets/images/tabs/tab_1s.png',
         isSelected: true,
         handleTap: (_) {
-          animationController.reverse();
+          _animationController.reverse();
         }),
     bottom_bar_model.BottomBarItem(
       index: 1,
@@ -52,15 +52,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       tab.isSelected = false;
     });
     bottomBarItemList[0].isSelected = true;
-    animationController = AnimationController(
-        duration: const Duration(milliseconds: AppTheme.baseAnimationDuration),
-        vsync: this);
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: AppTheme.baseAnimationDuration),
+    );
     super.initState();
   }
 
   @override
   void dispose() {
-    animationController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -78,9 +79,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           } else {
             return Container(
               padding: EdgeInsets.all(20),
-              alignment: Alignment.center,
+              alignment: Alignment.topCenter,
               child: SearchHero(
-                child: SearchBar(),
+                flightShuttleBuilder: (
+                  BuildContext flightContext,
+                  Animation<double> animation,
+                  HeroFlightDirection flightDirection,
+                  BuildContext fromHeroContext,
+                  BuildContext toHeroContext,
+                ) {
+                  return SearchBar(
+                    enabled: false,
+                    autofocus: false,
+                  );
+                },
+                child: SearchBar(
+                  enabled: false,
+                  autofocus: false,
+                ),
               ),
             );
           }
