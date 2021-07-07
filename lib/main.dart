@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pickle_browser/models/app_theme.dart';
-
+import 'package:provider/provider.dart';
 import 'utils/routes/routes_generator.dart';
+
+import 'global.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,13 +24,25 @@ class MyApp extends StatelessWidget {
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
-    return MaterialApp(
-      title: 'Pickle Browser',
-      debugShowCheckedModeBanner: true,
-      theme: AppTheme.appThemeData,
-      // theme: ThemeData.dark(),
-      initialRoute: '/',
-      onGenerateRoute: RouteGenerator.generateRoute,
+    return MultiProvider(
+      providers: [
+        // 提供主题全局变量
+        Provider<AppThemeData>(
+          create: (_) => AppThemeData(),
+        ),
+      ],
+      child: Builder(
+        builder: (context) {
+          return MaterialApp(
+            title: 'Pickle Browser',
+            debugShowCheckedModeBanner: true,
+            theme: context.theme.materialTheme,
+            // theme: ThemeData.dark(),
+            initialRoute: '/',
+            onGenerateRoute: RouteGenerator.generateRoute,
+          );
+        },
+      ),
     );
   }
 }
