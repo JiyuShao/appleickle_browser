@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-06 19:53:14
+ * @Last Modified time: 2021-07-07 10:13:28
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/models/app_theme.dart';
@@ -67,6 +67,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+    final topOffset = mq.size.height / 3;
     return PageScaffold(
       bottomBar: bottom_bar.BottomBar(
         bottomBarItemList: bottomBarItemList,
@@ -78,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             return SizedBox();
           } else {
             return Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.fromLTRB(20, topOffset, 20, 20),
               alignment: Alignment.topCenter,
               child: SearchHero(
                 flightShuttleBuilder: (

@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-06 19:53:01
+ * @Last Modified time: 2021-07-07 10:24:33
  */
 import 'dart:async';
 
@@ -19,7 +19,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  bool _heroAnimationFinished = false;
+  // 键盘是否打开
+  bool _isKeyboardOpen = false;
 
   @override
   void initState() {
@@ -34,8 +35,8 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
+    final topOffset = mq.size.height / 3;
     final bottomOffset = mq.viewInsets.bottom + mq.padding.bottom;
-
     return PageScaffold(
       // 键盘弹出时不需要 resize body
       resizeToAvoidBottomInset: false,
@@ -43,42 +44,43 @@ class _SearchScreenState extends State<SearchScreen> {
         // 这里手动计算
         'bottom': false,
       },
-      body: Container(
+      body: AnimatedContainer(
         color: Colors.amberAccent,
-        padding: EdgeInsets.all(20),
-        child: AnimatedContainer(
-          curve: Curves.easeOutQuad,
-          duration: Duration(milliseconds: AppTheme.baseAnimationDuration),
-          padding: EdgeInsets.only(bottom: bottomOffset),
-          alignment: _heroAnimationFinished
-              ? Alignment.bottomCenter
-              : Alignment.topCenter,
-          child: SearchHero(
-            flightShuttleBuilder: (
-              BuildContext flightContext,
-              Animation<double> animation,
-              HeroFlightDirection flightDirection,
-              BuildContext fromHeroContext,
-              BuildContext toHeroContext,
-            ) {
-              return SearchBar(
-                enabled: false,
-                autofocus: false,
-              );
-            },
-            child: SearchBar(
-              enabled: true,
-              autofocus: true,
-              handleKeyboardChange: (keyboardStatus) {
-                if (keyboardStatus == SearchBarKeyboardStatus.opened) {
+        curve: Curves.easeOutQuad,
+        duration: Duration(milliseconds: AppTheme.baseAnimationDuration * 2),
+        padding: EdgeInsets.fromLTRB(20, topOffset, 20, bottomOffset + 20),
+        alignment:
+            !_isKeyboardOpen ? Alignment.topCenter : Alignment.bottomCenter,
+        child: SearchHero(
+          flightShuttleBuilder: (
+            BuildContext flightContext,
+            Animation<double> animation,
+            HeroFlightDirection flightDirection,
+            BuildContext fromHeroContext,
+            BuildContext toHeroContext,
+          ) {
+            return SearchBar(
+              enabled: false,
+              autofocus: false,
+            );
+          },
+          child: SearchBar(
+            enabled: true,
+            autofocus: true,
+            handleKeyboardChange: (keyboardStatus) {
+              if (keyboardStatus == SearchBarKeyboardStatus.opening) {
+                Timer(Duration(milliseconds: 20), () {
                   setState(() {
-                    _heroAnimationFinished = true;
+                    _isKeyboardOpen = true;
                   });
-                } else if (keyboardStatus == SearchBarKeyboardStatus.closing) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
+                });
+              } else if (keyboardStatus == SearchBarKeyboardStatus.closing) {
+                setState(() {
+                  _isKeyboardOpen = false;
+                });
+                Navigator.pop(context);
+              }
+            },
           ),
         ),
       ),
