@@ -6,7 +6,7 @@
  * @Last Modified time: 2021-07-07 10:13:28
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme.dart';
+import 'package:pickle_browser/global.dart';
 import 'package:pickle_browser/screens/popup_menu/popup_menu_hero.dart';
 import 'package:pickle_browser/models/bottom_bar.dart' as bottom_bar_model;
 import 'package:pickle_browser/screens/search/search_hero.dart';
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     bottomBarItemList[0].isSelected = true;
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: AppTheme.baseAnimationDuration),
+      duration: Duration(milliseconds: AppThemeData.baseAnimationDuration),
     );
     super.initState();
   }

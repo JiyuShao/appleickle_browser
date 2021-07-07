@@ -8,7 +8,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme.dart';
+import 'package:pickle_browser/global.dart';
 import 'package:pickle_browser/screens/search/search_hero.dart';
 import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
 import 'package:pickle_browser/widgets/search_bar/search_bar.dart';
@@ -47,7 +47,8 @@ class _SearchScreenState extends State<SearchScreen> {
       body: AnimatedContainer(
         color: Colors.amberAccent,
         curve: Curves.easeOutQuad,
-        duration: Duration(milliseconds: AppTheme.baseAnimationDuration * 2),
+        duration:
+            Duration(milliseconds: AppThemeData.baseAnimationDuration * 2),
         padding: EdgeInsets.fromLTRB(20, topOffset, 20, bottomOffset + 20),
         alignment:
             !_isKeyboardOpen ? Alignment.topCenter : Alignment.bottomCenter,
