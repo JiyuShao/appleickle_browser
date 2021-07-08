@@ -6,7 +6,7 @@
  * @Last Modified time: 2021-07-02 18:04:25
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
+import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 
 class ErrorScreen extends StatefulWidget {
   @override

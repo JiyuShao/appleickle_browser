@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/utils/routes/page_routes/common_page_route_builder.dart';
+import 'package:appleickle_browser/utils/routes/page_routes/common_page_route_builder.dart';
 
 class PopupPageRoute<T> extends CommonPageRouteBuilder<T> {
   PopupPageRoute({

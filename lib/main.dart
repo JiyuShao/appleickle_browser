@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return MaterialApp(
-            title: 'Pickle Browser',
+            title: 'Appleickle Browser',
             debugShowCheckedModeBanner: true,
             theme: Provider.of<AppThemeModel>(context).materialTheme,
             // theme: ThemeData.dark(),

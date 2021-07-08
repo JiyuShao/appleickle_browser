@@ -6,14 +6,14 @@
  * @Last Modified time: 2021-07-08 11:05:18
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/screens/error_screen.dart';
-import 'package:pickle_browser/screens/home/home_screen.dart';
-import 'package:pickle_browser/screens/not_found_screen.dart';
-import 'package:pickle_browser/screens/popup_menu/popup_menu_screen.dart';
-import 'package:pickle_browser/screens/search/search_screen.dart';
-import 'package:pickle_browser/utils/routes/page_routes/fade_page_route.dart';
-import 'package:pickle_browser/utils/routes/page_routes/popup_page_route.dart';
-import 'package:pickle_browser/utils/routes/page_routes/search_page_route.dart';
+import 'package:appleickle_browser/screens/error_screen.dart';
+import 'package:appleickle_browser/screens/home/home_screen.dart';
+import 'package:appleickle_browser/screens/not_found_screen.dart';
+import 'package:appleickle_browser/screens/popup_menu/popup_menu_screen.dart';
+import 'package:appleickle_browser/screens/search/search_screen.dart';
+import 'package:appleickle_browser/utils/routes/page_routes/fade_page_route.dart';
+import 'package:appleickle_browser/utils/routes/page_routes/popup_page_route.dart';
+import 'package:appleickle_browser/utils/routes/page_routes/search_page_route.dart';
 
 // 路由配置
 class PageRouteModel {

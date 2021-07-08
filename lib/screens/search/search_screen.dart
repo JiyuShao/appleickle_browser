@@ -8,10 +8,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme_model.dart';
-import 'package:pickle_browser/screens/search/search_hero.dart';
-import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
-import 'package:pickle_browser/widgets/search_bar/search_bar.dart';
+import 'package:appleickle_browser/models/app_theme_model.dart';
+import 'package:appleickle_browser/screens/search/search_hero.dart';
+import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
+import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
 
 class SearchScreen extends StatefulWidget {
   @override

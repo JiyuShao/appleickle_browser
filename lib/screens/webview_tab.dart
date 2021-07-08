@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/utils/url_helper.dart';
+import 'package:appleickle_browser/utils/url_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:pickle_browser/models/browser_model.dart';
-import 'package:pickle_browser/models/webview_model.dart';
+import 'package:appleickle_browser/models/browser_model.dart';
+import 'package:appleickle_browser/models/webview_model.dart';
 
 class WebViewTab extends StatefulWidget {
   final GlobalKey<WebViewTabState> key;

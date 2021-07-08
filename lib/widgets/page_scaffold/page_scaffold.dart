@@ -6,7 +6,7 @@
  * @Last Modified time: 2021-07-02 18:05:34
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/widgets/bottom_bar/bottom_bar.dart';
+import 'package:appleickle_browser/widgets/bottom_bar/bottom_bar.dart';
 
 class PageScaffold extends StatelessWidget {
   // 页面元素
