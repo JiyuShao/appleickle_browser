@@ -3,12 +3,12 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-07 10:13:28
+ * @Last Modified time: 2021-07-08 11:03:15
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/global.dart';
+import 'package:pickle_browser/models/app_theme_model.dart';
 import 'package:pickle_browser/screens/popup_menu/popup_menu_hero.dart';
-import 'package:pickle_browser/models/bottom_bar.dart' as bottom_bar_model;
+import 'package:pickle_browser/models/bottom_bar_model.dart' as bottom_bar_model;
 import 'package:pickle_browser/screens/search/search_hero.dart';
 import 'package:pickle_browser/widgets/bottom_bar/bottom_bar.dart'
     as bottom_bar;
@@ -23,8 +23,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final AnimationController _animationController;
 // 首页的Tab列表数据
-  late final List<bottom_bar_model.BottomBarItem> bottomBarItemList = [
-    bottom_bar_model.BottomBarItem(
+  late final List<bottom_bar_model.BottomBarItemModel> bottomBarItemList = [
+    bottom_bar_model.BottomBarItemModel(
         index: 0,
         imagePath: 'assets/images/tabs/tab_1.png',
         selectedImagePath: 'assets/images/tabs/tab_1s.png',
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         handleTap: (_) {
           _animationController.reverse();
         }),
-    bottom_bar_model.BottomBarItem(
+    bottom_bar_model.BottomBarItemModel(
       index: 1,
       diableChange: true,
       imagePath: 'assets/images/tabs/tab_2.png',
@@ -48,13 +48,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     // 设置选中的 Tab
-    bottomBarItemList.forEach((bottom_bar_model.BottomBarItem tab) {
+    bottomBarItemList.forEach((bottom_bar_model.BottomBarItemModel tab) {
       tab.isSelected = false;
     });
     bottomBarItemList[0].isSelected = true;
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: AppThemeData.baseAnimationDuration),
+      duration: Duration(milliseconds: AppThemeModel.baseAnimationDuration),
     );
     super.initState();
   }

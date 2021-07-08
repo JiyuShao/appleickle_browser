@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'models/app_theme_model.dart';
+import 'models/browser_model.dart';
+import 'models/webview_model.dart';
 import 'utils/routes/routes_generator.dart';
-
-import 'global.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,8 +28,18 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         // 提供主题全局变量
-        Provider<AppThemeData>(
-          create: (_) => AppThemeData(),
+        Provider<AppThemeModel>(
+          create: (_) => AppThemeModel(),
+        ),
+        ChangeNotifierProvider<WebViewModel>(
+          create: (context) => WebViewModel(),
+        ),
+        ChangeNotifierProxyProvider<WebViewModel, BrowserModel>(
+          update: (context, webViewModel, browserModel) {
+            browserModel!.setCurrentWebViewModel(webViewModel);
+            return browserModel;
+          },
+          create: (BuildContext context) => BrowserModel(null),
         ),
       ],
       child: Builder(
@@ -36,7 +47,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Pickle Browser',
             debugShowCheckedModeBanner: true,
-            theme: context.theme.materialTheme,
+            theme: Provider.of<AppThemeModel>(context).materialTheme,
             // theme: ThemeData.dark(),
             initialRoute: '/',
             onGenerateRoute: RouteGenerator.generateRoute,

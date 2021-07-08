@@ -3,10 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-30 11:14:55 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-06-30 17:58:06
+ * @Last Modified time: 2021-07-08 11:05:58
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/routes.dart';
+import 'package:pickle_browser/models/page_route_model.dart';
 import 'package:pickle_browser/utils/logger.dart';
 
 class RouteGenerator {
