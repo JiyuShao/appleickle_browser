@@ -3,10 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-07-02 17:39:20 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-06 19:51:50
+ * @Last Modified time: 2021-07-08 11:02:35
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/global.dart';
+import 'package:pickle_browser/models/app_theme_model.dart';
 import 'package:pickle_browser/utils/debounce.dart';
 
 enum SearchBarKeyboardStatus {
@@ -180,7 +180,7 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   // 异步的聚焦输入框, 不然会跟 Hero 动画冲突
   void _focusOnTextField() async {
     await Future.delayed(
-      Duration(milliseconds: AppThemeData.baseAnimationDuration),
+      Duration(milliseconds: AppThemeModel.baseAnimationDuration),
     );
     if (!_focusNode.hasFocus) _focusNode.requestFocus();
   }

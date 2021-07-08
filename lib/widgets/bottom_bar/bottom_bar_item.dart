@@ -3,10 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 19:18:14 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-02 18:38:19
+ * @Last Modified time: 2021-07-08 11:03:12
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/bottom_bar.dart' as tab_bar_model;
+import 'package:pickle_browser/models/bottom_bar_model.dart' as tab_bar_model;
 
 class BottomBarItem extends StatefulWidget {
   const BottomBarItem(
@@ -17,7 +17,7 @@ class BottomBarItem extends StatefulWidget {
       : super(key: key);
 
   // 当前Tab数据
-  final tab_bar_model.BottomBarItem tabItemData;
+  final tab_bar_model.BottomBarItemModel tabItemData;
   // 触发点击逻辑
   final Function() handleTap;
   // 触发切换逻辑

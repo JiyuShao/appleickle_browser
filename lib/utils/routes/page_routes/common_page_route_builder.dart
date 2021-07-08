@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/global.dart';
+import 'package:pickle_browser/models/app_theme_model.dart';
 
 // 默认动画生成器
 Widget _defaultTransitionsBuilder(
@@ -21,10 +21,10 @@ class CommonPageRouteBuilder<T> extends PageRoute<T> {
     this.transitionsBuilder = _defaultTransitionsBuilder,
     // 动画时间
     this.transitionDuration =
-        const Duration(milliseconds: AppThemeData.baseAnimationDuration),
+        const Duration(milliseconds: AppThemeModel.baseAnimationDuration),
     // 反向动画时间
     this.reverseTransitionDuration =
-        const Duration(milliseconds: AppThemeData.baseAnimationDuration),
+        const Duration(milliseconds: AppThemeModel.baseAnimationDuration),
     // 是否保留状态
     this.maintainState = false,
     // 是否隐藏背景路由, 隐藏的话没有 Hero 返回动画

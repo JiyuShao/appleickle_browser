@@ -7,8 +7,8 @@
  */
 import 'package:flutter/material.dart';
 
-class BottomBarItem {
-  BottomBarItem({
+class BottomBarItemModel {
+  BottomBarItemModel({
     required this.index,
     required this.isSelected,
     this.diableChange = false,
@@ -32,9 +32,9 @@ class BottomBarItem {
   // 选中的图标地址
   final String selectedImagePath;
   // 点击回调
-  final Function(BottomBarItem tabItemData)? handleTap;
+  final Function(BottomBarItemModel tabItemData)? handleTap;
   // 切换回调
-  final Function(BottomBarItem tabItemData)? handleChange;
+  final Function(BottomBarItemModel tabItemData)? handleChange;
 
   Map<String, dynamic> toJson() {
     return {

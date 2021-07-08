@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-30 15:29:29 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-05 10:44:12
+ * @Last Modified time: 2021-07-08 11:05:18
  */
 import 'package:flutter/material.dart';
 import 'package:pickle_browser/screens/error_screen.dart';
@@ -16,8 +16,8 @@ import 'package:pickle_browser/utils/routes/page_routes/popup_page_route.dart';
 import 'package:pickle_browser/utils/routes/page_routes/search_page_route.dart';
 
 // 路由配置
-class RouteConfig {
-  RouteConfig({
+class PageRouteModel {
+  PageRouteModel({
     required this.path,
     required this.routeGenerator,
   });
@@ -35,23 +35,23 @@ class RouteConfig {
 }
 
 // 页面路径配置
-List<RouteConfig> routeListConfig = [
+List<PageRouteModel> routeListConfig = [
   // 首页页面路径
-  RouteConfig(
+  PageRouteModel(
       path: '/',
       routeGenerator: (_) => FadePageRoute(
           pageBuilder: (_, __, ___) => HomeScreen(),
           settings: RouteSettings(name: '/'))),
 
   // 弹窗菜单路由
-  RouteConfig(
+  PageRouteModel(
       path: '/popup_menu',
       routeGenerator: (_) => PopupPageRoute(
           pageBuilder: (_, __, ___) => PopupMenuScreen(),
           settings: RouteSettings(name: '/popup_menu'))),
 
   // 搜索页面路径
-  RouteConfig(
+  PageRouteModel(
       path: '/search',
       routeGenerator: (_) => SearchPageRoute(
           pageBuilder: (_, __, ___) => SearchScreen(),
@@ -59,14 +59,14 @@ List<RouteConfig> routeListConfig = [
 ];
 
 // 错误路由
-RouteConfig errorRouteConfig = RouteConfig(
+PageRouteModel errorRouteConfig = PageRouteModel(
     path: '/error',
     routeGenerator: (_) => FadePageRoute(
         pageBuilder: (_, __, ___) => ErrorScreen(),
         settings: RouteSettings(name: '/error')));
 
 // 404 路由
-RouteConfig notFoundRouteConfig = RouteConfig(
+PageRouteModel notFoundRouteConfig = PageRouteModel(
     path: '/not_found',
     routeGenerator: (_) => FadePageRoute(
         pageBuilder: (_, __, ___) => NotFoundScreen(),
