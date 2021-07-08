@@ -21,7 +21,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pickle_browser/screens/webview_tab.dart';
+import 'package:appleickle_browser/screens/webview_tab.dart';
 import 'webview_model.dart';
 import 'search_engine_model.dart';
 

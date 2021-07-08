@@ -6,7 +6,7 @@
  * @Last Modified time: 2021-07-08 11:03:08
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/bottom_bar_model.dart' as bottom_bar_model;
+import 'package:appleickle_browser/models/bottom_bar_model.dart' as bottom_bar_model;
 
 import 'bottom_bar_item.dart';
 

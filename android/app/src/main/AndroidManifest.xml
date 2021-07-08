@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pickle_browser">
+    package="com.example.appleickle_browser">
    <application
-        android:label="Pickle Browser"
+        android:label="Appleickle Browser"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

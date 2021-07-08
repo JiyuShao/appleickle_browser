@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/utils/routes/page_routes/common_page_route_builder.dart';
+import 'package:appleickle_browser/utils/routes/page_routes/common_page_route_builder.dart';
 
 Widget _transitionsBuilder(BuildContext context, Animation<double> animation,
     Animation<double> secondaryAnimation, Widget child) {

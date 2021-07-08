@@ -6,8 +6,8 @@
  * @Last Modified time: 2021-07-08 11:02:35
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme_model.dart';
-import 'package:pickle_browser/utils/debounce.dart';
+import 'package:appleickle_browser/models/app_theme_model.dart';
+import 'package:appleickle_browser/utils/debounce.dart';
 
 enum SearchBarKeyboardStatus {
   // 打开中

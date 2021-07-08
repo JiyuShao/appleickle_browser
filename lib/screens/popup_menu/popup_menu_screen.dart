@@ -6,7 +6,7 @@
  * @Last Modified time: 2021-07-01 14:08:45
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/screens/popup_menu/popup_menu_hero.dart';
+import 'package:appleickle_browser/screens/popup_menu/popup_menu_hero.dart';
 
 class PopupMenuScreen extends StatefulWidget {
   @override

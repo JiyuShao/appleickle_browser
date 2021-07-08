@@ -6,14 +6,14 @@
  * @Last Modified time: 2021-07-08 11:03:15
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme_model.dart';
-import 'package:pickle_browser/screens/popup_menu/popup_menu_hero.dart';
-import 'package:pickle_browser/models/bottom_bar_model.dart' as bottom_bar_model;
-import 'package:pickle_browser/screens/search/search_hero.dart';
-import 'package:pickle_browser/widgets/bottom_bar/bottom_bar.dart'
+import 'package:appleickle_browser/models/app_theme_model.dart';
+import 'package:appleickle_browser/screens/popup_menu/popup_menu_hero.dart';
+import 'package:appleickle_browser/models/bottom_bar_model.dart' as bottom_bar_model;
+import 'package:appleickle_browser/screens/search/search_hero.dart';
+import 'package:appleickle_browser/widgets/bottom_bar/bottom_bar.dart'
     as bottom_bar;
-import 'package:pickle_browser/widgets/page_scaffold/page_scaffold.dart';
-import 'package:pickle_browser/widgets/search_bar/search_bar.dart';
+import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
+import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

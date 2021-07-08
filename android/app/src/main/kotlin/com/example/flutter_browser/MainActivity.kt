@@ -1,4 +1,4 @@
-package com.example.pickle_browser
+package com.example.appleickle_browser
 
 import io.flutter.embedding.android.FlutterActivity
 

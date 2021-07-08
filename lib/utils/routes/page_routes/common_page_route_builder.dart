@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/app_theme_model.dart';
+import 'package:appleickle_browser/models/app_theme_model.dart';
 
 // 默认动画生成器
 Widget _defaultTransitionsBuilder(

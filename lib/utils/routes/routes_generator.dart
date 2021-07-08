@@ -6,8 +6,8 @@
  * @Last Modified time: 2021-07-08 11:05:58
  */
 import 'package:flutter/material.dart';
-import 'package:pickle_browser/models/page_route_model.dart';
-import 'package:pickle_browser/utils/logger.dart';
+import 'package:appleickle_browser/models/page_route_model.dart';
+import 'package:appleickle_browser/utils/logger.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
