@@ -14,7 +14,7 @@ class RouteGenerator {
     loggerNoStack.d('RouteGenerator 切换路由中', {
       "setting": {
         'name': settings.name,
-        'arguments': settings.arguments,
+        'arguments': settings.arguments.toString(),
       }
     });
 

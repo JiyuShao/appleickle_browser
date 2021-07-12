@@ -33,7 +33,7 @@ class _BottomBarItemState extends State<BottomBarItem>
 
   @override
   void initState() {
-    this.animationController = AnimationController(
+    animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 50),
     )..addStatusListener((AnimationStatus status) {
@@ -41,7 +41,7 @@ class _BottomBarItemState extends State<BottomBarItem>
           if (!mounted) return;
           // 在切换动画执行结束后, 执行切换回调
           widget.handleChange();
-          this.animationController.reverse();
+          animationController.reverse();
         }
       });
     super.initState();
@@ -60,7 +60,7 @@ class _BottomBarItemState extends State<BottomBarItem>
     }
     // 如果没禁止切换的情况下, 执行切换动画
     if (!widget.tabItemData.diableChange) {
-      this.animationController.forward();
+      animationController.forward();
     }
     // 执行点击回调
     widget.handleTap();
@@ -82,7 +82,7 @@ class _BottomBarItemState extends State<BottomBarItem>
                 alignment: Alignment.center,
                 scale: Tween<double>(begin: 0.88, end: 1.0).animate(
                     CurvedAnimation(
-                        parent: this.animationController,
+                        parent: animationController,
                         curve:
                             Interval(0.1, 1.0, curve: Curves.fastOutSlowIn))),
                 child: Image.asset(widget.tabItemData.isSelected
@@ -97,7 +97,7 @@ class _BottomBarItemState extends State<BottomBarItem>
                   alignment: Alignment.center,
                   scale: Tween<double>(begin: 0.0, end: 1.0).animate(
                       CurvedAnimation(
-                          parent: this.animationController,
+                          parent: animationController,
                           curve:
                               Interval(0.2, 1.0, curve: Curves.fastOutSlowIn))),
                   child: Container(
@@ -118,7 +118,7 @@ class _BottomBarItemState extends State<BottomBarItem>
                   alignment: Alignment.center,
                   scale: Tween<double>(begin: 0.0, end: 1.0).animate(
                       CurvedAnimation(
-                          parent: this.animationController,
+                          parent: animationController,
                           curve:
                               Interval(0.5, 0.8, curve: Curves.fastOutSlowIn))),
                   child: Container(
@@ -139,7 +139,7 @@ class _BottomBarItemState extends State<BottomBarItem>
                   alignment: Alignment.center,
                   scale: Tween<double>(begin: 0.0, end: 1.0).animate(
                       CurvedAnimation(
-                          parent: this.animationController,
+                          parent: animationController,
                           curve:
                               Interval(0.5, 0.6, curve: Curves.fastOutSlowIn))),
                   child: Container(

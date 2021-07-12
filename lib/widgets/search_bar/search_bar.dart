@@ -3,8 +3,9 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-07-02 17:39:20 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-08 11:02:35
+ * @Last Modified time: 2021-07-12 10:35:42
  */
+import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:appleickle_browser/utils/debounce.dart';
@@ -21,6 +22,8 @@ enum SearchBarKeyboardStatus {
 }
 
 class SearchBar extends StatefulWidget {
+  // Hero 动画相关 tag
+  final String heroTag;
   // 是否启用输入框
   final bool enabled;
   // 是否自动聚焦
@@ -28,12 +31,16 @@ class SearchBar extends StatefulWidget {
   // 键盘显示回调事件
   final void Function(SearchBarKeyboardStatus keyboardStatus)?
       handleKeyboardChange;
+  // 搜索回调事件
+  final void Function(String searchText)? handleSearch;
 
   SearchBar(
       {Key? key,
+      required this.heroTag,
       this.enabled = true,
       this.autofocus = false,
-      this.handleKeyboardChange})
+      this.handleKeyboardChange,
+      this.handleSearch})
       : super(
           key: key,
         );
@@ -137,7 +144,9 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
               focusNode: _focusNode,
               enabled: widget.enabled,
               autofocus: false,
+              textInputAction: TextInputAction.search,
               onTap: _handleTap,
+              onSubmitted: _handleSearch,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).backgroundColor,
@@ -171,10 +180,18 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
         ));
   }
 
+  // 处理点击事件
   void _handleTap() {
-    if (ModalRoute.of(context)!.settings.name != '/search') {
-      Navigator.of(context).pushNamed('/search');
+    if (ModalRoute.of(context)!.settings.name != SearchScreen.routeName) {
+      Navigator.of(context).pushNamed(SearchScreen.routeName,
+          arguments: SearchScreenArguments(heroTag: widget.heroTag));
     }
+  }
+
+  // 处理搜索事件
+  void _handleSearch(String value) {
+    print('_handleSearch $value');
+    if (widget.handleSearch != null) widget.handleSearch!(value);
   }
 
   // 异步的聚焦输入框, 不然会跟 Hero 动画冲突

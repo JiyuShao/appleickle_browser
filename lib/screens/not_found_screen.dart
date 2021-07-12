@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 
 class NotFoundScreen extends StatefulWidget {
+  // 路由名称
+  static const routeName = '/not_found';
   @override
   _NotFoundScreenState createState() => _NotFoundScreenState();
 }

@@ -61,13 +61,13 @@ const GoogleSearchEngine = const SearchEngineModel(
 
 const YahooSearchEngine = const SearchEngineModel(
     name: "Yahoo",
-    url: "https://www.bing.com//",
+    url: "https://yahoo.com/",
     searchUrl: "https://search.yahoo.com/search?p=",
     assetIcon: "assets/images/yahoo_logo.png");
 
 const BingSearchEngine = const SearchEngineModel(
     name: "Bing",
-    url: "https://yahoo.com/",
+    url: "https://www.bing.com/",
     searchUrl: "https://www.bing.com/search?q=",
     assetIcon: "assets/images/bing_logo.png");
 

@@ -1,3 +1,4 @@
+import 'package:appleickle_browser/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -32,14 +33,21 @@ class MyApp extends StatelessWidget {
           create: (_) => AppThemeModel(),
         ),
         ChangeNotifierProvider<WebViewModel>(
-          create: (context) => WebViewModel(),
+          create: (context) {
+            loggerNoStack.d('创建 WebViewModel');
+            return WebViewModel();
+          },
         ),
         ChangeNotifierProxyProvider<WebViewModel, BrowserModel>(
           update: (context, webViewModel, browserModel) {
+            loggerNoStack.d('更新 BrowserModel 的 webViewModel');
             browserModel!.setCurrentWebViewModel(webViewModel);
             return browserModel;
           },
-          create: (BuildContext context) => BrowserModel(null),
+          create: (BuildContext context) {
+            loggerNoStack.d('创建 BrowserModel');
+            return BrowserModel(null);
+          },
         ),
       ],
       child: Builder(
