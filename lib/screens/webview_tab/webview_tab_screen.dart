@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:appleickle_browser/screens/webview_tab/empty_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/utils/url_helper.dart';
@@ -8,18 +9,20 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
 
-class WebViewTab extends StatefulWidget {
-  final GlobalKey<WebViewTabState> key;
+class WebViewTabScreen extends StatefulWidget {
+  final GlobalKey<WebViewTabScreenState> key;
 
-  WebViewTab({required this.key, required this.webViewModel}) : super(key: key);
+  WebViewTabScreen({required this.key, required this.webViewModel})
+      : super(key: key);
 
   final WebViewModel webViewModel;
 
   @override
-  WebViewTabState createState() => WebViewTabState();
+  WebViewTabScreenState createState() => WebViewTabScreenState();
 }
 
-class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
+class WebViewTabScreenState extends State<WebViewTabScreen>
+    with WidgetsBindingObserver {
   InAppWebViewController? _webViewController;
   bool _isWindowClosed = false;
 
@@ -92,12 +95,18 @@ class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: _buildWebView(),
-    );
+    return widget.webViewModel.url != null
+        ? _buildWebView()
+        : _buildEmptyScreen();
   }
 
+  EmptyScreen _buildEmptyScreen() {
+    return EmptyScreen(
+        heroTag:
+            'WEBVIEW_TAB_SCREEN_${widget.webViewModel.tabIndex.toString()}');
+  }
+
+  // ignore: unused_element
   InAppWebView _buildWebView() {
     var browserModel = Provider.of<BrowserModel>(context, listen: true);
     var settings = browserModel.getSettings();
@@ -317,7 +326,7 @@ class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
         }
       },
       onCreateWindow: (controller, createWindowRequest) async {
-        var webViewTab = WebViewTab(
+        var webViewTab = WebViewTabScreen(
           key: GlobalKey(),
           webViewModel: WebViewModel(
               url: Uri.parse("about:blank"),
@@ -408,7 +417,7 @@ class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
   }
 
   void onShowTab() async {
-    this.resume();
+    resume();
     if (widget.webViewModel.needsToCompleteInitialLoad) {
       widget.webViewModel.needsToCompleteInitialLoad = false;
       await widget.webViewModel.webViewController
@@ -417,6 +426,6 @@ class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
   }
 
   void onHideTab() async {
-    this.pause();
+    pause();
   }
 }

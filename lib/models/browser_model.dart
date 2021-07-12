@@ -1,5 +1,5 @@
 // Copyright 2020 Lorenzo Pichilli
-// Reference https://github.com/pichillilorenzo/flutter_browser_app/blob/master/lib/browser.dart
+// Reference https://github.com/pichillilorenzo/flutter_browser_app/blob/master/lib/models/browser_model.dart
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,39 +18,30 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:math';
 
+import 'package:appleickle_browser/utils/logger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:appleickle_browser/screens/webview_tab.dart';
+import 'package:appleickle_browser/screens/webview_tab/webview_tab_screen.dart';
 import 'webview_model.dart';
 import 'search_engine_model.dart';
 
 class BrowserSettingsModel {
   SearchEngineModel searchEngine;
-  bool homePageEnabled;
-  String customUrlHomePage;
   bool debuggingEnabled;
 
   BrowserSettingsModel(
-      {this.searchEngine = GoogleSearchEngine,
-      this.homePageEnabled = false,
-      this.customUrlHomePage = "",
-      this.debuggingEnabled = false});
+      {this.searchEngine = GoogleSearchEngine, this.debuggingEnabled = false});
 
   BrowserSettingsModel copy() {
     return BrowserSettingsModel(
-        searchEngine: searchEngine,
-        homePageEnabled: homePageEnabled,
-        customUrlHomePage: customUrlHomePage,
-        debuggingEnabled: debuggingEnabled);
+        searchEngine: searchEngine, debuggingEnabled: debuggingEnabled);
   }
 
   static BrowserSettingsModel? fromMap(Map<String, dynamic>? map) {
     return map != null
         ? BrowserSettingsModel(
             searchEngine: SearchEngines[map["searchEngineIndex"]],
-            homePageEnabled: map["homePageEnabled"],
-            customUrlHomePage: map["customUrlHomePage"],
             debuggingEnabled: map["debuggingEnabled"])
         : null;
   }
@@ -58,8 +49,6 @@ class BrowserSettingsModel {
   Map<String, dynamic> toMap() {
     return {
       "searchEngineIndex": SearchEngines.indexOf(searchEngine),
-      "homePageEnabled": homePageEnabled,
-      "customUrlHomePage": customUrlHomePage,
       "debuggingEnabled": debuggingEnabled
     };
   }
@@ -75,40 +64,32 @@ class BrowserSettingsModel {
 }
 
 class BrowserModel extends ChangeNotifier {
-  final List<WebViewTab> _webViewTabs = [];
+  final List<WebViewTabScreen> _webViewTabs = [];
   int _currentTabIndex = -1;
   BrowserSettingsModel _settings = BrowserSettingsModel();
   late WebViewModel _currentWebViewModel;
 
-  bool _showTabScroller = false;
-
-  bool get showTabScroller => _showTabScroller;
-
-  set showTabScroller(bool value) {
-    if (value != _showTabScroller) {
-      _showTabScroller = value;
-      notifyListeners();
+  BrowserModel(WebViewModel? currentWebViewModel) {
+    if (currentWebViewModel != null) {
+      _currentWebViewModel = currentWebViewModel;
     }
   }
 
-  BrowserModel(currentWebViewModel) {
-    this._currentWebViewModel = currentWebViewModel;
-  }
-
-  UnmodifiableListView<WebViewTab> get webViewTabs =>
+  UnmodifiableListView<WebViewTabScreen> get webViewTabs =>
       UnmodifiableListView(_webViewTabs);
 
-  void addTab(WebViewTab webViewTab) {
+  void addTab(WebViewTabScreen webViewTab) {
     _webViewTabs.add(webViewTab);
     _currentTabIndex = _webViewTabs.length - 1;
     webViewTab.webViewModel.tabIndex = _currentTabIndex;
 
     _currentWebViewModel.updateWithValue(webViewTab.webViewModel);
+    loggerNoStack.d('添加 WebView Tab $webViewTab');
 
     notifyListeners();
   }
 
-  void addTabs(List<WebViewTab> webViewTabs) {
+  void addTabs(List<WebViewTabScreen> webViewTabs) {
     for (var webViewTab in webViewTabs) {
       _webViewTabs.add(webViewTab);
       webViewTab.webViewModel.tabIndex = _webViewTabs.length - 1;
@@ -161,7 +142,7 @@ class BrowserModel extends ChangeNotifier {
     return _currentTabIndex;
   }
 
-  WebViewTab? getCurrentTab() {
+  WebViewTabScreen? getCurrentTab() {
     return _currentTabIndex >= 0 ? _webViewTabs[_currentTabIndex] : null;
   }
 
@@ -210,30 +191,38 @@ class BrowserModel extends ChangeNotifier {
       return;
     }
 
-    this.closeAllTabs();
+    closeAllTabs();
 
+    // restore 设置数据
     BrowserSettingsModel settings = BrowserSettingsModel.fromMap(
             browserData["settings"]?.cast<String, dynamic>()) ??
         BrowserSettingsModel();
+
+    // restore webViewTabs 数据
     List<Map<String, dynamic>> webViewTabList =
         browserData["webViewTabs"]?.cast<Map<String, dynamic>>() ?? [];
-    List<WebViewTab> webViewTabs = webViewTabList
-        .map((e) => WebViewTab(
+    List<WebViewTabScreen> webViewTabs = webViewTabList
+        .map((e) => WebViewTabScreen(
               key: GlobalKey(),
               webViewModel: WebViewModel.fromMap(e)!,
             ))
         .toList();
+    // 至少保证存在一个 tab 页面
+    if (webViewTabs.isEmpty) {
+      webViewTabs = [
+        WebViewTabScreen(key: GlobalKey(), webViewModel: WebViewModel())
+      ];
+    }
     webViewTabs.sort(
         (a, b) => a.webViewModel.tabIndex!.compareTo(b.webViewModel.tabIndex!));
 
-    this.updateSettings(settings);
-    this.addTabs(webViewTabs);
+    updateSettings(settings);
+    addTabs(webViewTabs);
 
-    int currentTabIndex =
-        browserData["currentTabIndex"] ?? this._currentTabIndex;
-    currentTabIndex = min(currentTabIndex, this._webViewTabs.length - 1);
+    int currentTabIndex = browserData["currentTabIndex"] ?? _currentTabIndex;
+    currentTabIndex = min(currentTabIndex, _webViewTabs.length - 1);
 
-    if (currentTabIndex >= 0) this.showTab(currentTabIndex);
+    if (currentTabIndex >= 0) showTab(currentTabIndex);
   }
 
   Map<String, dynamic> toMap() {

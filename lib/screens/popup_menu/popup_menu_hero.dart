@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class PopupMenuHero extends Hero {
-  PopupMenuHero({required this.child})
+  // Hero 动画相关 tag
+  final String heroTag;
+  PopupMenuHero({required this.child, required this.heroTag})
       : super(
-          tag: PopupMenuHero.POPUP_MENU_SCREEN_HERO_TAG,
+          tag: '${PopupMenuHero.POPUP_MENU_SCREEN_HERO_TAG}/$heroTag',
           createRectTween: (begin, end) {
             return PopupRectTween(begin: begin, end: end);
           },

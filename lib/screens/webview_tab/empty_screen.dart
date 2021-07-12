@@ -3,24 +3,31 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-08 11:03:15
+ * @Last Modified time: 2021-07-12 10:36:02
  */
+import 'package:appleickle_browser/screens/popup_menu/popup_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:appleickle_browser/screens/popup_menu/popup_menu_hero.dart';
-import 'package:appleickle_browser/models/bottom_bar_model.dart' as bottom_bar_model;
+import 'package:appleickle_browser/models/bottom_bar_model.dart'
+    as bottom_bar_model;
 import 'package:appleickle_browser/screens/search/search_hero.dart';
 import 'package:appleickle_browser/widgets/bottom_bar/bottom_bar.dart'
     as bottom_bar;
 import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
 
-class HomeScreen extends StatefulWidget {
+class EmptyScreen extends StatefulWidget {
+  // Hero 动画相关 tag
+  final String heroTag;
+  EmptyScreen({required this.heroTag});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _EmptyScreenState createState() => _EmptyScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+class _EmptyScreenState extends State<EmptyScreen>
+    with TickerProviderStateMixin {
   late final AnimationController _animationController;
 // 首页的Tab列表数据
   late final List<bottom_bar_model.BottomBarItemModel> bottomBarItemList = [
@@ -39,9 +46,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       selectedImagePath: 'assets/images/tabs/tab_2s.png',
       isSelected: false,
       handleTap: (_) {
-        Navigator.of(context).pushNamed('/popup_menu');
+        Navigator.of(context).pushNamed(PopupMenuScreen.routeName,
+            arguments: PopupMenuScreenArguments(heroTag: widget.heroTag));
       },
-      builder: (_, child) => PopupMenuHero(child: child),
+      builder: (_, child) =>
+          PopupMenuHero(heroTag: widget.heroTag, child: child),
     ),
   ];
 
@@ -83,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               padding: EdgeInsets.fromLTRB(20, topOffset, 20, 20),
               alignment: Alignment.topCenter,
               child: SearchHero(
+                heroTag: widget.heroTag,
                 flightShuttleBuilder: (
                   BuildContext flightContext,
                   Animation<double> animation,
@@ -91,11 +101,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   BuildContext toHeroContext,
                 ) {
                   return SearchBar(
+                    heroTag: widget.heroTag,
                     enabled: false,
                     autofocus: false,
                   );
                 },
                 child: SearchBar(
+                  heroTag: widget.heroTag,
                   enabled: false,
                   autofocus: false,
                 ),
