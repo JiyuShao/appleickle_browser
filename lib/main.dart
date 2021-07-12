@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<WebViewModel, BrowserModel>(
           update: (context, webViewModel, browserModel) {
-            loggerNoStack.d('更新 BrowserModel 的 webViewModel');
+            // loggerNoStack.d(
+            //     '更新 BrowserModel 的 webViewModel: {tabIndex: ${webViewModel.tabIndex}, url: ${webViewModel.url}}');
             browserModel!.setCurrentWebViewModel(webViewModel);
             return browserModel;
           },
@@ -55,7 +56,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Appleickle Browser',
             debugShowCheckedModeBanner: true,
-            theme: Provider.of<AppThemeModel>(context).materialTheme,
+            theme:
+                Provider.of<AppThemeModel>(context, listen: true).materialTheme,
             // theme: ThemeData.dark(),
             initialRoute: '/',
             onGenerateRoute: RouteGenerator.generateRoute,

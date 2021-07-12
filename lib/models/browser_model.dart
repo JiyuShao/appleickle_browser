@@ -117,7 +117,12 @@ class BrowserModel extends ChangeNotifier {
       _currentWebViewModel.updateWithValue(WebViewModel());
     }
 
-    notifyListeners();
+    // 如果关闭当前页面后 tab 页面列表为空的话, 添加新的页面
+    if (_webViewTabs.isEmpty) {
+      addTab(WebViewTabScreen.createEmptyWebViewTabScreen());
+    } else {
+      notifyListeners();
+    }
   }
 
   void showTab(int index) {
@@ -138,9 +143,9 @@ class BrowserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  int getCurrentTabIndex() {
-    return _currentTabIndex;
-  }
+  int getTabsLength() => _webViewTabs.length;
+
+  int getCurrentTabIndex() => _currentTabIndex;
 
   WebViewTabScreen? getCurrentTab() {
     return _currentTabIndex >= 0 ? _webViewTabs[_currentTabIndex] : null;
@@ -177,8 +182,9 @@ class BrowserModel extends ChangeNotifier {
   }
 
   Future<void> flush() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("browser", json.encode(toJson()));
+    // 为方便调试, 先禁止保存
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // await prefs.setString("browser", json.encode(toJson()));
   }
 
   Future<void> restore() async {
@@ -210,7 +216,7 @@ class BrowserModel extends ChangeNotifier {
     // 至少保证存在一个 tab 页面
     if (webViewTabs.isEmpty) {
       webViewTabs = [
-        WebViewTabScreen(key: GlobalKey(), webViewModel: WebViewModel())
+        WebViewTabScreen.createEmptyWebViewTabScreen(),
       ];
     }
     webViewTabs.sort(

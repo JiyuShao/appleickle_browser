@@ -2,6 +2,7 @@
     package="com.example.appleickle_browser">
    <application
         android:label="Appleickle Browser"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

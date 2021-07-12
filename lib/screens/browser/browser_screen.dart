@@ -59,10 +59,6 @@ class _BrowserScreenState extends State<BrowserScreen>
 
   @override
   Widget build(BuildContext context) {
-    return _buildBrowser();
-  }
-
-  Widget _buildBrowser() {
     var currentWebViewModel = Provider.of<WebViewModel>(context, listen: true);
     var browserModel = Provider.of<BrowserModel>(context, listen: true);
 
@@ -73,49 +69,32 @@ class _BrowserScreenState extends State<BrowserScreen>
       browserModel.save();
     });
 
-    return IndexedStack(
-      index: 0,
-      children: [_buildWebViewTabsScreen()],
+    return _buildBrowser();
+  }
+
+  Widget _buildBrowser() {
+    return WillPopScope(
+      onWillPop: () async {
+        var webViewModel = Provider.of<WebViewModel>(context, listen: false);
+        var _webViewController = webViewModel.webViewController;
+
+        if (_webViewController != null) {
+          // 如果当前 webview 可以后退的话, 优先后退
+          if (await _webViewController.canGoBack()) {
+            _webViewController.goBack();
+            return false;
+          }
+          // 如果当前 tab 没有可回退的页面的话, 切换为当前 tab 的空页面
+        }
+
+        // 执行两次返回关闭逻辑
+        return false;
+      },
+      child: _buildWebViewTabs(),
     );
   }
 
-  Widget _buildWebViewTabsScreen() {
-    return WillPopScope(
-        onWillPop: () async {
-          var browserModel = Provider.of<BrowserModel>(context, listen: false);
-          var webViewModel = browserModel.getCurrentTab()?.webViewModel;
-          var _webViewController = webViewModel?.webViewController;
-
-          if (_webViewController != null) {
-            if (await _webViewController.canGoBack()) {
-              _webViewController.goBack();
-              return false;
-            }
-          }
-
-          if (webViewModel != null && webViewModel.tabIndex != null) {
-            setState(() {
-              browserModel.closeTab(webViewModel.tabIndex!);
-            });
-            FocusScope.of(context).unfocus();
-            return false;
-          }
-
-          return browserModel.webViewTabs.length == 0;
-        },
-        child: Listener(
-          onPointerUp: (_) {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus &&
-                currentFocus.focusedChild != null) {
-              currentFocus.focusedChild!.unfocus();
-            }
-          },
-          child: _buildWebViewTabsScreenContent(),
-        ));
-  }
-
-  Widget _buildWebViewTabsScreenContent() {
+  Widget _buildWebViewTabs() {
     var browserModel = Provider.of<BrowserModel>(context, listen: true);
 
     var stackChildren = <Widget>[
