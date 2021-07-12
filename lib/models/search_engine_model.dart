@@ -53,6 +53,18 @@ class SearchEngineModel {
   }
 }
 
+const BingSearchEngine = const SearchEngineModel(
+    name: "Bing",
+    url: "https://www.bing.com/",
+    searchUrl: "https://www.bing.com/search?q=",
+    assetIcon: "assets/images/bing_logo.png");
+
+const BaiduSearchEngine = const SearchEngineModel(
+    name: "Baidu",
+    url: "https://www.baidu.com/",
+    searchUrl: "https://www.baidu.com/s?wd=",
+    assetIcon: "assets/images/google_logo.png");
+
 const GoogleSearchEngine = const SearchEngineModel(
     name: "Google",
     url: "https://www.google.com/",
@@ -64,12 +76,6 @@ const YahooSearchEngine = const SearchEngineModel(
     url: "https://yahoo.com/",
     searchUrl: "https://search.yahoo.com/search?p=",
     assetIcon: "assets/images/yahoo_logo.png");
-
-const BingSearchEngine = const SearchEngineModel(
-    name: "Bing",
-    url: "https://www.bing.com/",
-    searchUrl: "https://www.bing.com/search?q=",
-    assetIcon: "assets/images/bing_logo.png");
 
 const DuckDuckGoSearchEngine = const SearchEngineModel(
     name: "DuckDuckGo",
@@ -84,9 +90,10 @@ const EcosiaSearchEngine = const SearchEngineModel(
     assetIcon: "assets/images/ecosia_logo.png");
 
 const SearchEngines = <SearchEngineModel>[
+  BingSearchEngine,
+  BaiduSearchEngine,
   GoogleSearchEngine,
   YahooSearchEngine,
-  BingSearchEngine,
   DuckDuckGoSearchEngine,
   EcosiaSearchEngine
 ];

@@ -6,6 +6,7 @@
  * @Last Modified time: 2021-07-12 10:35:42
  */
 import 'package:appleickle_browser/screens/search/search_screen.dart';
+import 'package:appleickle_browser/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:appleickle_browser/utils/debounce.dart';
@@ -190,7 +191,7 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
 
   // 处理搜索事件
   void _handleSearch(String value) {
-    print('_handleSearch $value');
+    loggerNoStack.d('SearchBar.__handleSearch: $value');
     if (widget.handleSearch != null) widget.handleSearch!(value);
   }
 

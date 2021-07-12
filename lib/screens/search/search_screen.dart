@@ -7,7 +7,9 @@
  */
 import 'dart:async';
 
+import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:appleickle_browser/screens/search/search_hero.dart';
 import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
@@ -112,25 +114,23 @@ class _SearchScreenState extends State<SearchScreen> {
                 }
               },
               handleSearch: (searchText) {
-                _openNewTab(searchText);
+                _handleSearch(searchText);
               }),
         ),
       ),
     );
   }
 
-  void _openNewTab(String searchText) {
-    // BrowserModel browserModel =
-    //     Provider.of<BrowserModel>(context, listen: false);
+  void _handleSearch(String searchText) {
+    BrowserModel browserModel =
+        Provider.of<BrowserModel>(context, listen: false);
+    BrowserSettingsModel settings = browserModel.getSettings();
 
-    // BrowserSettingsModel settings = browserModel.getSettings();
-
-    // browserModel.addTab(WebViewTabScreen(
-    //   key: GlobalKey(),
-    //   webViewModel: WebViewModel(
-    //       url: Uri.parse(searchText.startsWith("http")
-    //           ? searchText
-    //           : settings.searchEngine.searchUrl + searchText)),
-    // ));
+    var currentTab = browserModel.getCurrentTab();
+    if (currentTab != null) {
+      currentTab.loadUrl(Uri.parse(searchText.startsWith("http")
+          ? searchText
+          : settings.searchEngine.searchUrl + searchText));
+    }
   }
 }

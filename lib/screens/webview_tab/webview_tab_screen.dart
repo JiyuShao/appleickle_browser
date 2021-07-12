@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:appleickle_browser/screens/webview_tab/empty_screen.dart';
+import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/utils/url_helper.dart';
@@ -10,6 +11,14 @@ import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
 
 class WebViewTabScreen extends StatefulWidget {
+  // 空页面的路由标识
+  static String aboutBlankUrl = 'about:blank';
+
+  // 创建空的 tab 页面
+  static WebViewTabScreen createEmptyWebViewTabScreen() {
+    return WebViewTabScreen(key: GlobalKey(), webViewModel: WebViewModel());
+  }
+
   final GlobalKey<WebViewTabScreenState> key;
 
   WebViewTabScreen({required this.key, required this.webViewModel})
@@ -17,8 +26,20 @@ class WebViewTabScreen extends StatefulWidget {
 
   final WebViewModel webViewModel;
 
+  late final WebViewTabScreenState _state;
+
+  void loadUrl(Uri url) {
+    WebViewModel webviewModel =
+        Provider.of<WebViewModel>(_state.context, listen: false);
+    webViewModel.url = url;
+    webviewModel.updateWithValue(webViewModel);
+  }
+
   @override
-  WebViewTabScreenState createState() => WebViewTabScreenState();
+  WebViewTabScreenState createState() {
+    _state = WebViewTabScreenState();
+    return _state;
+  }
 }
 
 class WebViewTabScreenState extends State<WebViewTabScreen>
@@ -95,9 +116,22 @@ class WebViewTabScreenState extends State<WebViewTabScreen>
 
   @override
   Widget build(BuildContext context) {
-    return widget.webViewModel.url != null
-        ? _buildWebView()
-        : _buildEmptyScreen();
+    // 监听数据的改动
+    var browserModel = Provider.of<BrowserModel>(context, listen: true);
+    var settings = browserModel.getSettings();
+    var currentWebViewModel = Provider.of<WebViewModel>(context, listen: true);
+
+    // 选择性的渲染页面
+    return IndexedStack(
+        index: widget.webViewModel.url == null ||
+                widget.webViewModel.url.toString() ==
+                    WebViewTabScreen.aboutBlankUrl
+            ? 0
+            : 1,
+        children: [
+          _buildEmptyScreen(),
+          _buildWebView(browserModel, settings, currentWebViewModel),
+        ]);
   }
 
   EmptyScreen _buildEmptyScreen() {
@@ -106,12 +140,8 @@ class WebViewTabScreenState extends State<WebViewTabScreen>
             'WEBVIEW_TAB_SCREEN_${widget.webViewModel.tabIndex.toString()}');
   }
 
-  // ignore: unused_element
-  InAppWebView _buildWebView() {
-    var browserModel = Provider.of<BrowserModel>(context, listen: true);
-    var settings = browserModel.getSettings();
-    var currentWebViewModel = Provider.of<WebViewModel>(context, listen: true);
-
+  Widget _buildWebView(BrowserModel browserModel, BrowserSettingsModel settings,
+      WebViewModel currentWebViewModel) {
     if (Platform.isAndroid) {
       AndroidInAppWebViewController.setWebContentsDebuggingEnabled(
           settings.debuggingEnabled);
@@ -141,227 +171,234 @@ class WebViewTabScreenState extends State<WebViewTabScreen>
     // initialOptions.ios.allowingReadAccessTo =
     //     Uri.parse('file://$WEB_ARCHIVE_DIR/');
 
-    return InAppWebView(
-      initialUrlRequest: URLRequest(url: widget.webViewModel.url),
-      initialOptions: initialOptions,
-      windowId: widget.webViewModel.windowId,
-      onWebViewCreated: (controller) async {
-        initialOptions.crossPlatform.transparentBackground = false;
-        await controller.setOptions(options: initialOptions);
+    // 渲染 webview
+    Widget renderWebview = Container();
 
-        _webViewController = controller;
-        widget.webViewModel.webViewController = controller;
+    // 如果 url 不为空, 初始化 webview
+    if (widget.webViewModel.url != null) {
+      renderWebview = InAppWebView(
+        initialUrlRequest: URLRequest(url: widget.webViewModel.url ?? Uri()),
+        initialOptions: initialOptions,
+        windowId: widget.webViewModel.windowId,
+        onWebViewCreated: (controller) async {
+          initialOptions.crossPlatform.transparentBackground = false;
+          await controller.setOptions(options: initialOptions);
 
-        if (Platform.isAndroid) {
-          controller.android.startSafeBrowsing();
-        }
+          _webViewController = controller;
+          widget.webViewModel.webViewController = controller;
 
-        widget.webViewModel.options = await controller.getOptions();
-
-        if (isCurrentTab(currentWebViewModel)) {
-          currentWebViewModel.updateWithValue(widget.webViewModel);
-        }
-      },
-      onLoadStart: (controller, url) async {
-        widget.webViewModel.isSecure = UrlHelper.urlIsSecure(url!);
-        widget.webViewModel.url = url;
-        widget.webViewModel.loaded = false;
-        widget.webViewModel.setLoadedResources([]);
-        widget.webViewModel.setJavaScriptConsoleResults([]);
-
-        if (isCurrentTab(currentWebViewModel)) {
-          currentWebViewModel.updateWithValue(widget.webViewModel);
-        } else if (widget.webViewModel.needsToCompleteInitialLoad) {
-          controller.stopLoading();
-        }
-      },
-      onLoadStop: (controller, url) async {
-        widget.webViewModel.url = url;
-        widget.webViewModel.favicon = null;
-        widget.webViewModel.loaded = true;
-
-        var sslCertificateFuture = _webViewController?.getCertificate();
-        var titleFuture = _webViewController?.getTitle();
-        var faviconsFuture = _webViewController?.getFavicons();
-
-        var sslCertificate = await sslCertificateFuture;
-        if (sslCertificate == null && !UrlHelper.isLocalizedContent(url!)) {
-          widget.webViewModel.isSecure = false;
-        }
-
-        widget.webViewModel.title = await titleFuture;
-
-        List<Favicon>? favicons = await faviconsFuture;
-        if (favicons != null && favicons.isNotEmpty) {
-          for (var fav in favicons) {
-            if (widget.webViewModel.favicon == null) {
-              widget.webViewModel.favicon = fav;
-            } else {
-              if ((widget.webViewModel.favicon!.width == null &&
-                      !widget.webViewModel.favicon!.url
-                          .toString()
-                          .endsWith("favicon.ico")) ||
-                  (fav.width != null &&
-                      widget.webViewModel.favicon!.width != null &&
-                      fav.width! > widget.webViewModel.favicon!.width!)) {
-                widget.webViewModel.favicon = fav;
-              }
-            }
+          if (Platform.isAndroid) {
+            controller.android.startSafeBrowsing();
           }
-        }
 
-        if (isCurrentTab(currentWebViewModel)) {
-          widget.webViewModel.needsToCompleteInitialLoad = false;
-          currentWebViewModel.updateWithValue(widget.webViewModel);
+          widget.webViewModel.options = await controller.getOptions();
 
-          var screenshotData = _webViewController
-              ?.takeScreenshot(
-                  screenshotConfiguration: ScreenshotConfiguration(
-                      compressFormat: CompressFormat.JPEG, quality: 20))
-              .timeout(
-                Duration(milliseconds: 1500),
-                onTimeout: () => null,
-              );
-          widget.webViewModel.screenshot = await screenshotData;
-        }
-      },
-      onProgressChanged: (controller, progress) {
-        widget.webViewModel.progress = progress / 100;
-
-        if (isCurrentTab(currentWebViewModel)) {
-          currentWebViewModel.updateWithValue(widget.webViewModel);
-        }
-      },
-      onUpdateVisitedHistory: (controller, url, androidIsReload) async {
-        widget.webViewModel.url = url;
-        widget.webViewModel.title = await _webViewController?.getTitle();
-
-        if (isCurrentTab(currentWebViewModel)) {
-          currentWebViewModel.updateWithValue(widget.webViewModel);
-        }
-      },
-      onLongPressHitTestResult: (controller, hitTestResult) async {},
-      onConsoleMessage: (controller, consoleMessage) {},
-      onLoadResource: (controller, resource) {
-        widget.webViewModel.addLoadedResources(resource);
-
-        if (isCurrentTab(currentWebViewModel)) {
-          currentWebViewModel.updateWithValue(widget.webViewModel);
-        }
-      },
-      shouldOverrideUrlLoading: (controller, navigationAction) async {
-        return NavigationActionPolicy.ALLOW;
-      },
-      onDownloadStart: (controller, url) async {},
-      onReceivedServerTrustAuthRequest: (controller, challenge) async {
-        var sslError = challenge.protectionSpace.sslError;
-        if (sslError != null &&
-            (sslError.iosError != null || sslError.androidError != null)) {
-          if (Platform.isIOS && sslError.iosError == IOSSslError.UNSPECIFIED) {
-            return ServerTrustAuthResponse(
-                action: ServerTrustAuthResponseAction.PROCEED);
-          }
-          widget.webViewModel.isSecure = false;
           if (isCurrentTab(currentWebViewModel)) {
             currentWebViewModel.updateWithValue(widget.webViewModel);
           }
+        },
+        onLoadStart: (controller, url) async {
+          widget.webViewModel.isSecure = UrlHelper.urlIsSecure(url!);
+          widget.webViewModel.url = url;
+          widget.webViewModel.loaded = false;
+          widget.webViewModel.setLoadedResources([]);
+          widget.webViewModel.setJavaScriptConsoleResults([]);
+
+          if (isCurrentTab(currentWebViewModel)) {
+            currentWebViewModel.updateWithValue(widget.webViewModel);
+          } else if (widget.webViewModel.needsToCompleteInitialLoad) {
+            controller.stopLoading();
+          }
+        },
+        onLoadStop: (controller, url) async {
+          widget.webViewModel.url = url;
+          widget.webViewModel.favicon = null;
+          widget.webViewModel.loaded = true;
+
+          var sslCertificateFuture = _webViewController?.getCertificate();
+          var titleFuture = _webViewController?.getTitle();
+          var faviconsFuture = _webViewController?.getFavicons();
+
+          var sslCertificate = await sslCertificateFuture;
+          if (sslCertificate == null && !UrlHelper.isLocalizedContent(url!)) {
+            widget.webViewModel.isSecure = false;
+          }
+
+          widget.webViewModel.title = await titleFuture;
+
+          List<Favicon>? favicons = await faviconsFuture;
+          if (favicons != null && favicons.isNotEmpty) {
+            for (var fav in favicons) {
+              if (widget.webViewModel.favicon == null) {
+                widget.webViewModel.favicon = fav;
+              } else {
+                if ((widget.webViewModel.favicon!.width == null &&
+                        !widget.webViewModel.favicon!.url
+                            .toString()
+                            .endsWith("favicon.ico")) ||
+                    (fav.width != null &&
+                        widget.webViewModel.favicon!.width != null &&
+                        fav.width! > widget.webViewModel.favicon!.width!)) {
+                  widget.webViewModel.favicon = fav;
+                }
+              }
+            }
+          }
+
+          if (isCurrentTab(currentWebViewModel)) {
+            widget.webViewModel.needsToCompleteInitialLoad = false;
+            currentWebViewModel.updateWithValue(widget.webViewModel);
+
+            var screenshotData = _webViewController
+                ?.takeScreenshot(
+                    screenshotConfiguration: ScreenshotConfiguration(
+                        compressFormat: CompressFormat.JPEG, quality: 20))
+                .timeout(
+                  Duration(milliseconds: 1500),
+                  onTimeout: () => null,
+                );
+            widget.webViewModel.screenshot = await screenshotData;
+          }
+        },
+        onProgressChanged: (controller, progress) {
+          widget.webViewModel.progress = progress / 100;
+
+          if (isCurrentTab(currentWebViewModel)) {
+            currentWebViewModel.updateWithValue(widget.webViewModel);
+          }
+        },
+        onUpdateVisitedHistory: (controller, url, androidIsReload) async {
+          widget.webViewModel.url = url;
+          widget.webViewModel.title = await _webViewController?.getTitle();
+
+          if (isCurrentTab(currentWebViewModel)) {
+            currentWebViewModel.updateWithValue(widget.webViewModel);
+          }
+        },
+        onLongPressHitTestResult: (controller, hitTestResult) async {},
+        onConsoleMessage: (controller, consoleMessage) {},
+        onLoadResource: (controller, resource) {
+          widget.webViewModel.addLoadedResources(resource);
+
+          if (isCurrentTab(currentWebViewModel)) {
+            currentWebViewModel.updateWithValue(widget.webViewModel);
+          }
+        },
+        shouldOverrideUrlLoading: (controller, navigationAction) async {
+          return NavigationActionPolicy.ALLOW;
+        },
+        onDownloadStart: (controller, url) async {},
+        onReceivedServerTrustAuthRequest: (controller, challenge) async {
+          var sslError = challenge.protectionSpace.sslError;
+          if (sslError != null &&
+              (sslError.iosError != null || sslError.androidError != null)) {
+            if (Platform.isIOS &&
+                sslError.iosError == IOSSslError.UNSPECIFIED) {
+              return ServerTrustAuthResponse(
+                  action: ServerTrustAuthResponseAction.PROCEED);
+            }
+            widget.webViewModel.isSecure = false;
+            if (isCurrentTab(currentWebViewModel)) {
+              currentWebViewModel.updateWithValue(widget.webViewModel);
+            }
+            return ServerTrustAuthResponse(
+                action: ServerTrustAuthResponseAction.CANCEL);
+          }
           return ServerTrustAuthResponse(
-              action: ServerTrustAuthResponseAction.CANCEL);
-        }
-        return ServerTrustAuthResponse(
-            action: ServerTrustAuthResponseAction.PROCEED);
-      },
-      onLoadError: (controller, url, code, message) async {
-        if (Platform.isIOS && code == -999) {
-          // NSURLErrorDomain
-          return;
-        }
+              action: ServerTrustAuthResponseAction.PROCEED);
+        },
+        onLoadError: (controller, url, code, message) async {
+          if (Platform.isIOS && code == -999) {
+            // NSURLErrorDomain
+            return;
+          }
 
-        var errorUrl =
-            url ?? widget.webViewModel.url ?? Uri.parse('about:blank');
+          var errorUrl = url ??
+              widget.webViewModel.url ??
+              Uri.parse(WebViewTabScreen.aboutBlankUrl);
 
-        _webViewController?.loadData(data: """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <style>
-    ${await _webViewController?.getTRexRunnerCss()}
-    </style>
-    <style>
-    .interstitial-wrapper {
-        box-sizing: border-box;
-        font-size: 1em;
-        line-height: 1.6em;
-        margin: 0 auto 0;
-        max-width: 600px;
-        width: 100%;
+          _webViewController?.loadData(data: """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <style>
+      ${await _webViewController?.getTRexRunnerCss()}
+      </style>
+      <style>
+      .interstitial-wrapper {
+          box-sizing: border-box;
+          font-size: 1em;
+          line-height: 1.6em;
+          margin: 0 auto 0;
+          max-width: 600px;
+          width: 100%;
+      }
+      </style>
+    </head>
+    <body>
+      ${await _webViewController?.getTRexRunnerHtml()}
+      <div class="interstitial-wrapper">
+        <h1>Website not available</h1>
+        <p>Could not load web pages at <strong>$errorUrl</strong> because:</p>
+        <p>$message</p>
+      </div>
+    </body>
+      """, baseUrl: errorUrl, androidHistoryUrl: errorUrl);
+
+          widget.webViewModel.url = url;
+          widget.webViewModel.isSecure = false;
+
+          if (isCurrentTab(currentWebViewModel)) {
+            currentWebViewModel.updateWithValue(widget.webViewModel);
+          }
+        },
+        onTitleChanged: (controller, title) async {
+          widget.webViewModel.title = title;
+
+          if (isCurrentTab(currentWebViewModel)) {
+            currentWebViewModel.updateWithValue(widget.webViewModel);
+          }
+        },
+        onCreateWindow: (controller, createWindowRequest) async {
+          var webViewTab = WebViewTabScreen(
+            key: GlobalKey(),
+            webViewModel: WebViewModel(windowId: createWindowRequest.windowId),
+          );
+
+          browserModel.addTab(webViewTab);
+
+          return true;
+        },
+        onCloseWindow: (controller) {
+          if (_isWindowClosed) {
+            return;
+          }
+          _isWindowClosed = true;
+          if (widget.webViewModel.tabIndex != null) {
+            browserModel.closeTab(widget.webViewModel.tabIndex!);
+          }
+        },
+        androidOnPermissionRequest: (InAppWebViewController controller,
+            String origin, List<String> resources) async {
+          return PermissionRequestResponse(
+              resources: resources,
+              action: PermissionRequestResponseAction.GRANT);
+        },
+        onReceivedHttpAuthRequest: (InAppWebViewController controller,
+            URLAuthenticationChallenge challenge) async {
+          var action = await createHttpAuthDialog(challenge);
+          return HttpAuthResponse(
+              username: _httpAuthUsernameController.text.trim(),
+              password: _httpAuthPasswordController.text,
+              action: action,
+              permanentPersistence: true);
+        },
+      );
     }
-    </style>
-</head>
-<body>
-    ${await _webViewController?.getTRexRunnerHtml()}
-    <div class="interstitial-wrapper">
-      <h1>Website not available</h1>
-      <p>Could not load web pages at <strong>$errorUrl</strong> because:</p>
-      <p>$message</p>
-    </div>
-</body>
-    """, baseUrl: errorUrl, androidHistoryUrl: errorUrl);
-
-        widget.webViewModel.url = url;
-        widget.webViewModel.isSecure = false;
-
-        if (isCurrentTab(currentWebViewModel)) {
-          currentWebViewModel.updateWithValue(widget.webViewModel);
-        }
-      },
-      onTitleChanged: (controller, title) async {
-        widget.webViewModel.title = title;
-
-        if (isCurrentTab(currentWebViewModel)) {
-          currentWebViewModel.updateWithValue(widget.webViewModel);
-        }
-      },
-      onCreateWindow: (controller, createWindowRequest) async {
-        var webViewTab = WebViewTabScreen(
-          key: GlobalKey(),
-          webViewModel: WebViewModel(
-              url: Uri.parse("about:blank"),
-              windowId: createWindowRequest.windowId),
-        );
-
-        browserModel.addTab(webViewTab);
-
-        return true;
-      },
-      onCloseWindow: (controller) {
-        if (_isWindowClosed) {
-          return;
-        }
-        _isWindowClosed = true;
-        if (widget.webViewModel.tabIndex != null) {
-          browserModel.closeTab(widget.webViewModel.tabIndex!);
-        }
-      },
-      androidOnPermissionRequest: (InAppWebViewController controller,
-          String origin, List<String> resources) async {
-        return PermissionRequestResponse(
-            resources: resources,
-            action: PermissionRequestResponseAction.GRANT);
-      },
-      onReceivedHttpAuthRequest: (InAppWebViewController controller,
-          URLAuthenticationChallenge challenge) async {
-        var action = await createHttpAuthDialog(challenge);
-        return HttpAuthResponse(
-            username: _httpAuthUsernameController.text.trim(),
-            password: _httpAuthPasswordController.text,
-            action: action,
-            permanentPersistence: true);
-      },
-    );
+    return PageScaffold(body: renderWebview);
   }
 
   bool isCurrentTab(WebViewModel currentWebViewModel) {
