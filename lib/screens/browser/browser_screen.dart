@@ -17,6 +17,7 @@ import 'dart:async';
 import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class BrowserScreen extends StatefulWidget {
@@ -31,7 +32,10 @@ class BrowserScreen extends StatefulWidget {
 
 class _BrowserScreenState extends State<BrowserScreen>
     with SingleTickerProviderStateMixin {
+  // 是否 restored
   var _isRestored = false;
+  // 是否可以退出应用
+  var _canExitApp = false;
 
   @override
   void initState() {
@@ -59,8 +63,8 @@ class _BrowserScreenState extends State<BrowserScreen>
 
   @override
   Widget build(BuildContext context) {
-    var currentWebViewModel = Provider.of<WebViewModel>(context, listen: true);
     var browserModel = Provider.of<BrowserModel>(context, listen: true);
+    var currentWebViewModel = Provider.of<WebViewModel>(context, listen: true);
 
     browserModel.addListener(() {
       browserModel.save();
@@ -75,20 +79,44 @@ class _BrowserScreenState extends State<BrowserScreen>
   Widget _buildBrowser() {
     return WillPopScope(
       onWillPop: () async {
-        var webViewModel = Provider.of<WebViewModel>(context, listen: false);
-        var _webViewController = webViewModel.webViewController;
+        var browserModel = Provider.of<BrowserModel>(context, listen: false);
+        var currentWebViewTab = browserModel.getCurrentTab();
+        var _webViewController =
+            currentWebViewTab?.webViewModel.webViewController;
 
-        if (_webViewController != null) {
-          // 如果当前 webview 可以后退的话, 优先后退
-          if (await _webViewController.canGoBack()) {
-            _webViewController.goBack();
-            return false;
-          }
-          // 如果当前 tab 没有可回退的页面的话, 切换为当前 tab 的空页面
+        // 如果当前 webview 可以后退的话, 优先后退
+        if (_webViewController != null &&
+            await _webViewController.canGoBack()) {
+          _webViewController.goBack();
+          return false;
+        }
+
+        // 如果当前 tab 没有可回退的页面的话
+        // 再次返回则显示空页面
+        if (currentWebViewTab != null &&
+            currentWebViewTab.webViewModel.url != null) {
+          currentWebViewTab.key.currentState?.loadUrl(null);
+          return false;
         }
 
         // 执行两次返回关闭逻辑
-        return false;
+        if (!_canExitApp) {
+          _canExitApp = true;
+          Fluttertoast.showToast(
+              msg: "再次返回退出应用",
+              toastLength: Toast.LENGTH_SHORT,
+              timeInSecForIosWeb: 1,
+              gravity: ToastGravity.TOP,
+              backgroundColor: Colors.black45,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          Timer(Duration(seconds: 2), () {
+            _canExitApp = false;
+          });
+          return false;
+        }
+        Fluttertoast.cancel();
+        return true;
       },
       child: _buildWebViewTabs(),
     );
@@ -97,46 +125,22 @@ class _BrowserScreenState extends State<BrowserScreen>
   Widget _buildWebViewTabs() {
     var browserModel = Provider.of<BrowserModel>(context, listen: true);
 
-    var stackChildren = <Widget>[
-      IndexedStack(
-        index: browserModel.getCurrentTabIndex(),
-        children: browserModel.webViewTabs.map((webViewTab) {
-          var isCurrentTab = webViewTab.webViewModel.tabIndex ==
-              browserModel.getCurrentTabIndex();
+    return IndexedStack(
+      index: browserModel.getCurrentTabIndex(),
+      children: browserModel.webViewTabs.map((webViewTab) {
+        var isCurrentTab = webViewTab.webViewModel.tabIndex ==
+            browserModel.getCurrentTabIndex();
 
-          if (isCurrentTab) {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              webViewTab.key.currentState?.onShowTab();
-            });
-          } else {
-            webViewTab.key.currentState?.onHideTab();
-          }
+        if (isCurrentTab) {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            webViewTab.webViewScreenKey.currentState?.onShowTab();
+          });
+        } else {
+          webViewTab.webViewScreenKey.currentState?.onHideTab();
+        }
 
-          return webViewTab;
-        }).toList(),
-      ),
-      _createProgressIndicator()
-    ];
-
-    return Stack(
-      children: stackChildren,
+        return webViewTab;
+      }).toList(),
     );
-  }
-
-  Widget _createProgressIndicator() {
-    return Selector<WebViewModel, double>(
-        selector: (context, webViewModel) => webViewModel.progress,
-        builder: (context, progress, child) {
-          if (progress >= 1.0) {
-            return Container();
-          }
-          return PreferredSize(
-              preferredSize: Size(double.infinity, 4.0),
-              child: SizedBox(
-                  height: 4.0,
-                  child: LinearProgressIndicator(
-                    value: progress,
-                  )));
-        });
   }
 }

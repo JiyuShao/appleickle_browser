@@ -21,6 +21,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WebViewModel extends ChangeNotifier {
+  // 空页面的路由标识
+  static String aboutBlankUrl = 'about:blank';
+
   int? _tabIndex;
   Uri? _url;
   String? _title;

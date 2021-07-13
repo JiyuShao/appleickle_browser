@@ -73,7 +73,6 @@ class _SearchScreenState extends State<SearchScreen> {
         'bottom': false,
       },
       body: AnimatedContainer(
-        color: Colors.amberAccent,
         curve: Curves.easeOutQuad,
         duration:
             Duration(milliseconds: AppThemeModel.baseAnimationDuration * 2),
@@ -128,9 +127,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
     var currentTab = browserModel.getCurrentTab();
     if (currentTab != null) {
-      currentTab.loadUrl(Uri.parse(searchText.startsWith("http")
-          ? searchText
-          : settings.searchEngine.searchUrl + searchText));
+      currentTab.key.currentState?.loadUrl(Uri.parse(
+          searchText.startsWith("http")
+              ? searchText
+              : settings.searchEngine.searchUrl + searchText));
     }
   }
 }
