@@ -6,13 +6,12 @@
  * @Last Modified time: 2021-07-02 18:05:34
  */
 import 'package:flutter/material.dart';
-import 'package:appleickle_browser/widgets/bottom_bar/bottom_bar.dart';
 
 class PageScaffold extends StatelessWidget {
   // 页面元素
   final Widget body;
-  // 自定义的 bottomBar
-  final BottomBar? bottomBar;
+  // 自定义的 bottomArea
+  final Widget? bottomArea;
   // 键盘弹出时是否 resize body
   final bool? resizeToAvoidBottomInset;
   // safeArea的配置
@@ -20,7 +19,7 @@ class PageScaffold extends StatelessWidget {
 
   const PageScaffold(
       {required this.body,
-      this.bottomBar,
+      this.bottomArea,
       this.resizeToAvoidBottomInset,
       this.safeAreaOptions});
 
@@ -51,7 +50,7 @@ class PageScaffold extends StatelessWidget {
     ];
 
     // 添加自定义的 bottomBar
-    if (bottomBar != null) pageBody.add(bottomBar!);
+    if (bottomArea != null) pageBody.add(bottomArea!);
 
     return Scaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,

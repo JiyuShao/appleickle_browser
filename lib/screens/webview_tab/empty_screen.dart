@@ -33,8 +33,8 @@ class _EmptyScreenState extends State<EmptyScreen>
   late final List<bottom_bar_model.BottomBarItemModel> bottomBarItemList = [
     bottom_bar_model.BottomBarItemModel(
         index: 0,
-        imagePath: 'assets/images/tabs/tab_1.png',
-        selectedImagePath: 'assets/images/tabs/tab_1s.png',
+        imagePath: 'assets/images/tabs/tabs.png',
+        selectedImagePath: 'assets/images/tabs/tabs.png',
         isSelected: true,
         handleTap: (_) {
           _animationController.reverse();
@@ -42,8 +42,8 @@ class _EmptyScreenState extends State<EmptyScreen>
     bottom_bar_model.BottomBarItemModel(
       index: 1,
       diableChange: true,
-      imagePath: 'assets/images/tabs/tab_2.png',
-      selectedImagePath: 'assets/images/tabs/tab_2s.png',
+      imagePath: 'assets/images/tabs/settings.png',
+      selectedImagePath: 'assets/images/tabs/settings.png',
       isSelected: false,
       handleTap: (_) {
         Navigator.of(context).pushNamed(PopupMenuScreen.routeName,
@@ -79,7 +79,7 @@ class _EmptyScreenState extends State<EmptyScreen>
     final mq = MediaQuery.of(context);
     final topOffset = mq.size.height / 3;
     return PageScaffold(
-      bottomBar: bottom_bar.BottomBar(
+      bottomArea: bottom_bar.BottomBar(
         bottomBarItemList: bottomBarItemList,
       ),
       body: FutureBuilder<bool>(
