@@ -13,6 +13,12 @@ class AppThemeModel {
   // 动画持续时间
   static const int baseAnimationDuration = 120;
 
+  // 键盘默认高度
+  static const double keyboardDefaultHeight = 300;
+
+  // 键盘的最大高度
+  double? keyboardMaxHeight;
+
   // MaterialApp theme 数据
   final ThemeData materialTheme = ThemeData(
     brightness: Brightness.light,
