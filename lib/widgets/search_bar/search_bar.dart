@@ -52,11 +52,19 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   // setState 之后防止键盘关闭, 设置 key
-  late final GlobalKey<FormState> _formKey;
-  // 接收是否 focus 数据
-  late final FocusNode _focusNode;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // input 控制器
+  final TextEditingController _controller = TextEditingController();
   // debounce 使用的 key
-  late final Symbol _debounceKey;
+  final Symbol _debounceKey = Symbol('SearchBar/handleKeyboardChangeDebounced');
+
+  // 接收是否 focus 数据
+  late final FocusNode _focusNode = FocusNode()
+    ..addListener(() {
+      // 触发刷新
+      setState(() {});
+    });
+
   // 键盘距离底部缓存
   double _lastKeyboardBottom = 0;
   // 键盘是否已打开缓存
@@ -66,13 +74,6 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
-    _formKey = new GlobalKey<FormState>();
-    _focusNode = FocusNode()
-      ..addListener(() {
-        // 触发刷新
-        setState(() {});
-      });
-    _debounceKey = Symbol('SearchBar/handleKeyboardChangeDebounced');
   }
 
   @override
@@ -120,6 +121,8 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    var themeData = Theme.of(context);
+
     return AnimatedContainer(
         duration: Duration(seconds: 5),
         decoration: _focusNode.hasFocus
@@ -143,37 +146,45 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
             child: TextField(
               key: _formKey,
               focusNode: _focusNode,
+              controller: _controller,
               enabled: widget.enabled,
               autofocus: false,
               textInputAction: TextInputAction.search,
               onTap: _handleTap,
-              onSubmitted: _handleSearch,
+              onSubmitted: (_) {
+                _handleSearch();
+              },
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Theme.of(context).backgroundColor,
+                fillColor: themeData.backgroundColor,
                 contentPadding:
                     const EdgeInsets.only(left: 14.0, bottom: 17.0, top: 17.0),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(
-                      width: 2.5, color: Theme.of(context).hintColor),
+                  borderSide:
+                      BorderSide(width: 2.5, color: themeData.hintColor),
                 ),
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(
-                      width: 2.5, color: Theme.of(context).hintColor),
+                  borderSide:
+                      BorderSide(width: 2.5, color: themeData.hintColor),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(
-                      width: 2.5, color: Theme.of(context).primaryColor),
+                  borderSide:
+                      BorderSide(width: 2.5, color: themeData.primaryColor),
                 ),
-                suffixIcon: Icon(
-                  Icons.search,
-                  size: 30,
-                  color: _focusNode.hasFocus
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).hintColor,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    _handleSearch();
+                  },
+                  child: Icon(
+                    Icons.search,
+                    size: 30,
+                    color: _focusNode.hasFocus
+                        ? themeData.primaryColor
+                        : themeData.hintColor,
+                  ),
                 ),
               ),
             ),
@@ -190,9 +201,12 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   }
 
   // 处理搜索事件
-  void _handleSearch(String value) {
-    loggerNoStack.d('SearchBar.__handleSearch: $value');
-    if (widget.handleSearch != null) widget.handleSearch!(value);
+  void _handleSearch() {
+    var currentValue = _controller.text;
+    loggerNoStack.d('SearchBar.__handleSearch: $currentValue');
+    if (widget.handleSearch != null && currentValue.isNotEmpty)
+      widget.handleSearch!(currentValue);
+    _focusNode.unfocus();
   }
 
   // 异步的聚焦输入框, 不然会跟 Hero 动画冲突

@@ -6,7 +6,8 @@
  * @Last Modified time: 2021-07-08 11:03:12
  */
 import 'package:flutter/material.dart';
-import 'package:appleickle_browser/models/bottom_bar_model.dart' as tab_bar_model;
+import 'package:appleickle_browser/models/bottom_bar_model.dart'
+    as tab_bar_model;
 
 class BottomBarItem extends StatefulWidget {
   const BottomBarItem(
@@ -85,9 +86,13 @@ class _BottomBarItemState extends State<BottomBarItem>
                         parent: animationController,
                         curve:
                             Interval(0.1, 1.0, curve: Curves.fastOutSlowIn))),
-                child: Image.asset(widget.tabItemData.isSelected
-                    ? widget.tabItemData.selectedImagePath
-                    : widget.tabItemData.imagePath),
+                child: Image.asset(
+                  widget.tabItemData.isSelected
+                      ? widget.tabItemData.selectedImagePath
+                      : widget.tabItemData.imagePath,
+                  width: 38,
+                  height: 38,
+                ),
               ),
               Positioned(
                 top: 4,
