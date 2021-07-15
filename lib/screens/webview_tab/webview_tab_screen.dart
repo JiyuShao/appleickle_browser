@@ -11,9 +11,13 @@ class WebViewTabScreen extends StatefulWidget {
     return WebViewTabScreen(key: GlobalKey(), webViewModel: WebViewModel());
   }
 
+  // 用户获取对应的 WebViewTabScreen state
   final GlobalKey<WebViewTabScreenState> key;
+
+  // 用于获取对应的 WebViewScreen state
   final GlobalKey<WebViewScreenState> webViewScreenKey = GlobalKey();
 
+  // 从外部接收数据模型
   final WebViewModel webViewModel;
 
   WebViewTabScreen({required this.key, required this.webViewModel})
@@ -36,12 +40,14 @@ class WebViewTabScreenState extends State<WebViewTabScreen>
   EmptyScreen _buildEmptyScreen() {
     return EmptyScreen(
         heroTag:
-            'WEBVIEW_TAB_SCREEN_${widget.webViewModel.tabIndex.toString()}');
+            'WEBVIEW_TAB_SCREEN/EMPTY_SCREEN_${widget.webViewModel.tabIndex.toString()}');
   }
 
   WebViewScreen _buildWebviewScreen() {
     return WebViewScreen(
       key: widget.webViewScreenKey,
+      heroTag:
+          'WEBVIEW_TAB_SCREEN/WEBVIEW_SCREEN_${widget.webViewModel.tabIndex.toString()}',
       webViewModel: widget.webViewModel,
     );
   }

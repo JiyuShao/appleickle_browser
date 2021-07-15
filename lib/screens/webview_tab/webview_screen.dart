@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:appleickle_browser/models/app_theme_model.dart';
+import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
+import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/utils/url_helper.dart';
@@ -11,11 +14,16 @@ import 'package:appleickle_browser/models/webview_model.dart';
 
 class WebViewScreen extends StatefulWidget {
   final GlobalKey<WebViewScreenState> key;
+  // Hero 动画相关 tag
+  final String heroTag;
 
   final WebViewModel webViewModel;
 
-  WebViewScreen({required this.key, required this.webViewModel})
-      : super(key: key);
+  WebViewScreen({
+    required this.key,
+    required this.heroTag,
+    required this.webViewModel,
+  }) : super(key: key);
 
   @override
   WebViewScreenState createState() => WebViewScreenState();
@@ -95,9 +103,10 @@ class WebViewScreenState extends State<WebViewScreen>
 
   @override
   Widget build(BuildContext context) {
-    return _buildWebView();
+    return Stack(children: [_buildWebView(), _buildSearchBar()]);
   }
 
+  // 构建 webview 区域
   Widget _buildWebView() {
     // 监听数据的改动
     var browserModel = Provider.of<BrowserModel>(context, listen: false);
@@ -336,9 +345,13 @@ class WebViewScreenState extends State<WebViewScreen>
             },
           );
     return PageScaffold(
-        body: Stack(children: [renderWebview, _buildProgressIndicator()]));
+        body: Stack(children: [
+      renderWebview,
+      _buildProgressIndicator(),
+    ]));
   }
 
+  // 构建加载指示器
   Widget _buildProgressIndicator() {
     return Selector<WebViewModel, double>(
         selector: (context, webViewModel) => webViewModel.progress,
@@ -354,6 +367,26 @@ class WebViewScreenState extends State<WebViewScreen>
                     value: progress,
                   )));
         });
+  }
+
+  // 构建搜索框
+  Widget _buildSearchBar() {
+    var appThemeModel = Provider.of<AppThemeModel>(context, listen: true);
+
+    return SafeArea(
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        padding: EdgeInsets.all(appThemeModel.basePagePadding),
+        child: SearchBar(
+          searchScreenArguments: SearchScreenArguments(
+            heroTag: widget.heroTag,
+            initialAlignment: Alignment.bottomCenter,
+          ),
+          enabled: false,
+          autofocus: false,
+        ),
+      ),
+    );
   }
 
   // 判断当前打开的 tab 是否为当前 tab

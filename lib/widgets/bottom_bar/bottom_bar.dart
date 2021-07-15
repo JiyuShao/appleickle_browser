@@ -6,7 +6,8 @@
  * @Last Modified time: 2021-07-08 11:03:08
  */
 import 'package:flutter/material.dart';
-import 'package:appleickle_browser/models/bottom_bar_model.dart' as bottom_bar_model;
+import 'package:appleickle_browser/models/bottom_bar_model.dart'
+    as bottom_bar_model;
 
 import 'bottom_bar_item.dart';
 
@@ -31,7 +32,7 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
           SizedBox(
             height: 62,
             child: Padding(
-              padding: const EdgeInsets.only(top: 4),
+              padding: EdgeInsets.only(top: 4),
               child: Row(
                 children: widget.bottomBarItemList.map((currentTab) {
                   Widget currentItem = BottomBarItem(
@@ -62,7 +63,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   void handleSwitchTab(bottom_bar_model.BottomBarItemModel currentTab) {
     if (!mounted) return;
     setState(() {
-      widget.bottomBarItemList.forEach((bottom_bar_model.BottomBarItemModel tab) {
+      widget.bottomBarItemList
+          .forEach((bottom_bar_model.BottomBarItemModel tab) {
         tab.isSelected = false;
         // 如果 tab 存在的情况下, 触发回调
         if (currentTab.index == tab.index) {

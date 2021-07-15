@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-07-02 17:39:20 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-12 10:35:42
+ * @Last Modified time: 2021-07-15 16:53:06
  */
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/utils/logger.dart';
@@ -23,8 +23,7 @@ enum SearchBarKeyboardStatus {
 }
 
 class SearchBar extends StatefulWidget {
-  // Hero 动画相关 tag
-  final String heroTag;
+  final SearchScreenArguments? searchScreenArguments;
   // 是否启用输入框
   final bool enabled;
   // 是否自动聚焦
@@ -35,14 +34,15 @@ class SearchBar extends StatefulWidget {
   // 搜索回调事件
   final void Function(String searchText)? handleSearch;
 
-  SearchBar(
-      {Key? key,
-      required this.heroTag,
-      this.enabled = true,
-      this.autofocus = false,
-      this.handleKeyboardChange,
-      this.handleSearch})
-      : super(
+  SearchBar({
+    Key? key,
+    required this.searchScreenArguments,
+    // 输入框都是关闭, 点击跳向搜索页面
+    this.enabled = false,
+    this.autofocus = false,
+    this.handleKeyboardChange,
+    this.handleSearch,
+  }) : super(
           key: key,
         );
 
@@ -154,6 +154,7 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
               onSubmitted: (_) {
                 _handleSearch();
               },
+              style: themeData.textTheme.bodyText1,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: themeData.backgroundColor,
@@ -174,18 +175,20 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
                   borderSide:
                       BorderSide(width: 2.5, color: themeData.primaryColor),
                 ),
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    _handleSearch();
-                  },
-                  child: Icon(
-                    Icons.search,
-                    size: 30,
-                    color: _focusNode.hasFocus
-                        ? themeData.primaryColor
-                        : themeData.hintColor,
-                  ),
-                ),
+                suffixIcon: widget.enabled
+                    ? GestureDetector(
+                        onTap: () {
+                          _handleSearch();
+                        },
+                        child: Icon(
+                          Icons.search,
+                          size: 30,
+                          color: _focusNode.hasFocus
+                              ? themeData.primaryColor
+                              : themeData.hintColor,
+                        ),
+                      )
+                    : null,
               ),
             ),
           ),
@@ -196,7 +199,7 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   void _handleTap() {
     if (ModalRoute.of(context)!.settings.name != SearchScreen.routeName) {
       Navigator.of(context).pushNamed(SearchScreen.routeName,
-          arguments: SearchScreenArguments(heroTag: widget.heroTag));
+          arguments: widget.searchScreenArguments);
     }
   }
 
