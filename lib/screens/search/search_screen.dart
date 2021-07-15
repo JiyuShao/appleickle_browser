@@ -3,9 +3,8 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-12 10:35:52
+ * @Last Modified time: 2021-07-15 17:58:55
  */
-import 'dart:async';
 import 'dart:math';
 
 import 'package:appleickle_browser/models/browser_model.dart';
@@ -17,8 +16,13 @@ import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
 
 class SearchScreenArguments {
+  // 当前屏幕 Hero 动画 tag
   final String heroTag;
-  SearchScreenArguments({required this.heroTag});
+  // 初始位置
+  final Alignment initialAlignment;
+
+  SearchScreenArguments(
+      {required this.heroTag, this.initialAlignment = Alignment.topCenter});
 
   Map<String, dynamic> toJson() {
     return {
@@ -65,66 +69,67 @@ class _SearchScreenState extends State<SearchScreen> {
     var appThemeModel = Provider.of<AppThemeModel>(context, listen: true);
 
     return PageScaffold(
-      // 键盘弹出时不需要 resize body
-      resizeToAvoidBottomInset: false,
-      safeAreaOptions: {
-        // 这里手动计算
-        'bottom': false,
-      },
-      body: AnimatedContainer(
-        curve: Curves.easeOutQuad,
-        duration:
-            Duration(milliseconds: AppThemeModel.baseAnimationDuration * 2),
-        padding: _getSearchScreenPadding(appThemeModel),
-        alignment:
-            !_isKeyboardOpen ? Alignment.topCenter : Alignment.bottomCenter,
-        child: SearchHero(
-          heroTag: routeArgs.heroTag,
-          flightShuttleBuilder: (
-            BuildContext flightContext,
-            Animation<double> animation,
-            HeroFlightDirection flightDirection,
-            BuildContext fromHeroContext,
-            BuildContext toHeroContext,
-          ) {
-            return SearchBar(
-              heroTag: routeArgs.heroTag,
-              enabled: false,
-              autofocus: false,
-            );
-          },
-          child: SearchBar(
-              heroTag: routeArgs.heroTag,
-              enabled: true,
-              autofocus: true,
-              handleKeyboardChange: (keyboardStatus) {
-                if (keyboardStatus == SearchBarKeyboardStatus.opening) {
-                  // 键盘开启的时候延迟 search bar 的开始动画
-                  Timer(
-                      Duration(
-                        milliseconds:
-                            appThemeModel.keyboardMaxHeight == null ? 20 : 0,
-                      ), () {
+        // 键盘弹出时不需要 resize body
+        resizeToAvoidBottomInset: false,
+        safeAreaOptions: {
+          // 这里手动计算
+          'bottom': false,
+        },
+        body: _getAnimationWidget(
+          appThemeModel,
+          SearchHero(
+            heroTag: routeArgs.heroTag,
+            flightShuttleBuilder: (
+              BuildContext flightContext,
+              Animation<double> animation,
+              HeroFlightDirection flightDirection,
+              BuildContext fromHeroContext,
+              BuildContext toHeroContext,
+            ) {
+              return SearchBar(
+                searchScreenArguments:
+                    SearchScreenArguments(heroTag: routeArgs.heroTag),
+                enabled: false,
+                autofocus: false,
+              );
+            },
+            child: SearchBar(
+                searchScreenArguments:
+                    SearchScreenArguments(heroTag: routeArgs.heroTag),
+                enabled: true,
+                autofocus: true,
+                handleKeyboardChange: (keyboardStatus) {
+                  if (keyboardStatus == SearchBarKeyboardStatus.opening) {
+                    // 键盘开启时才进行动画
                     setState(() {
                       _isKeyboardOpen = true;
                     });
-                  });
-                } else if (keyboardStatus == SearchBarKeyboardStatus.opened) {
-                  // 键盘打开后, 设置当前键盘高度为最大高度
-                  appThemeModel.keyboardMaxHeight = _getKeyboardHeight();
-                } else if (keyboardStatus == SearchBarKeyboardStatus.closing) {
-                  // 键盘关闭时直接执行 search bar 关闭动画
-                  setState(() {
-                    _isKeyboardOpen = false;
-                  });
-                  Navigator.pop(context);
-                }
-              },
-              handleSearch: (searchText) {
-                _handleSearch(searchText);
-              }),
-        ),
-      ),
+                  } else if (keyboardStatus == SearchBarKeyboardStatus.opened) {
+                    // 键盘打开后, 设置当前键盘高度为最大高度
+                    appThemeModel.keyboardMaxHeight = _getKeyboardHeight();
+                  } else if (keyboardStatus ==
+                      SearchBarKeyboardStatus.closing) {
+                    Navigator.pop(context);
+                  }
+                },
+                handleSearch: (searchText) {
+                  _handleSearch(searchText);
+                }),
+          ),
+        ));
+  }
+
+  Widget _getAnimationWidget(AppThemeModel appThemeModel, Widget child) {
+    return AnimatedContainer(
+      curve: widget.routeArgs.initialAlignment != Alignment.bottomCenter
+          ? Curves.easeOutBack
+          : Curves.easeOutQuart,
+      duration: widget.routeArgs.initialAlignment != Alignment.bottomCenter
+          ? Duration(milliseconds: AppThemeModel.baseAnimationDuration * 2)
+          : Duration(milliseconds: AppThemeModel.baseAnimationDuration),
+      padding: _getSearchScreenPadding(appThemeModel),
+      alignment: _getSearchScreenAlignment(),
+      child: child,
     );
   }
 
@@ -137,19 +142,35 @@ class _SearchScreenState extends State<SearchScreen> {
   // 获取当前页面 padding
   EdgeInsets _getSearchScreenPadding(AppThemeModel appThemeModel) {
     if (!mounted) {
-      return EdgeInsets.all(20);
+      return EdgeInsets.all(appThemeModel.basePagePadding);
     }
 
     final mq = MediaQuery.of(context);
     // top 大约在页面三分之一处
-    final topOffset = mq.size.height / 3 - 20;
+    final topOffset = mq.size.height / 3;
 
-    // 底部优先设置为键盘的最大高度
-    double bottomOffset = max(
-      _getKeyboardHeight(),
-      appThemeModel.keyboardMaxHeight ?? AppThemeModel.keyboardDefaultHeight,
-    );
-    return EdgeInsets.fromLTRB(20, topOffset + 20, 20, bottomOffset + 20);
+    double bottomOffset = _getKeyboardHeight();
+
+    // 如果不是 bottomCenter 对齐的情况下, 键盘打开会有从上到下的动画, 所以优先取键盘最大高度
+    if (widget.routeArgs.initialAlignment != Alignment.bottomCenter) {
+      // 底部优先设置为键盘的最大高度
+      bottomOffset = max(
+        bottomOffset,
+        appThemeModel.keyboardMaxHeight ?? appThemeModel.keyboardDefaultHeight,
+      );
+    }
+    return EdgeInsets.fromLTRB(
+        appThemeModel.basePagePadding,
+        topOffset,
+        appThemeModel.basePagePadding,
+        bottomOffset + appThemeModel.basePagePadding);
+  }
+
+  Alignment _getSearchScreenAlignment() {
+    if (widget.routeArgs.initialAlignment == Alignment.bottomCenter) {
+      return Alignment.bottomCenter;
+    }
+    return !_isKeyboardOpen ? Alignment.topCenter : Alignment.bottomCenter;
   }
 
   void _handleSearch(String searchText) {
