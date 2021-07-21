@@ -3,12 +3,13 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-15 17:58:55
+ * @Last Modified time: 2021-07-16 10:45:23
  */
 import 'dart:math';
 
 import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:appleickle_browser/screens/search/search_hero.dart';
@@ -20,13 +21,20 @@ class SearchScreenArguments {
   final String heroTag;
   // 初始位置
   final Alignment initialAlignment;
+  // 搜索框初始值
+  final String initialValue;
 
-  SearchScreenArguments(
-      {required this.heroTag, this.initialAlignment = Alignment.topCenter});
+  SearchScreenArguments({
+    required this.heroTag,
+    this.initialAlignment = Alignment.topCenter,
+    this.initialValue = '',
+  });
 
   Map<String, dynamic> toJson() {
     return {
       "heroTag": this.heroTag,
+      "initialAlignment": this.initialAlignment,
+      "initialValue": this.initialValue,
     };
   }
 
@@ -94,6 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
               );
             },
             child: SearchBar(
+                initialValue: widget.routeArgs.initialValue,
                 searchScreenArguments:
                     SearchScreenArguments(heroTag: routeArgs.heroTag),
                 enabled: true,
@@ -180,10 +189,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
     var currentTab = browserModel.getCurrentTab();
     if (currentTab != null) {
-      currentTab.key.currentState?.loadUrl(Uri.parse(
-          searchText.startsWith("http")
-              ? searchText
-              : settings.searchEngine.searchUrl + searchText));
+      currentTab.key.currentState?.loadUrl(
+          urlRequest: URLRequest(
+              url: Uri.parse(searchText.startsWith("http")
+                  ? searchText
+                  : settings.searchEngine.searchUrl + searchText)));
     }
   }
 }

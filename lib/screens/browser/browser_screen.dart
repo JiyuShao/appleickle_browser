@@ -95,7 +95,7 @@ class _BrowserScreenState extends State<BrowserScreen>
         // 再次返回则显示空页面
         if (currentWebViewTab != null &&
             currentWebViewTab.webViewModel.url != null) {
-          currentWebViewTab.key.currentState?.loadUrl(null);
+          currentWebViewTab.key.currentState?.loadUrl();
           return false;
         }
 

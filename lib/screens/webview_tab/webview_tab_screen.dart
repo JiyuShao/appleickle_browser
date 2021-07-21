@@ -3,7 +3,7 @@ import 'package:appleickle_browser/screens/webview_tab/webview_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WebViewTabScreen extends StatefulWidget {
   // 创建空的 tab 页面
@@ -53,13 +53,21 @@ class WebViewTabScreenState extends State<WebViewTabScreen>
   }
 
   // 加载新的路由
-  void loadUrl(Uri? url) {
-    setState(() {
-      // 获取全局的配置
-      WebViewModel globalWebViewModel =
-          Provider.of<WebViewModel>(context, listen: false);
-      widget.webViewModel.url = url;
-      globalWebViewModel.updateWithValue(widget.webViewModel);
-    });
+  Future<void> loadUrl({URLRequest? urlRequest}) async {
+    if (widget.webViewModel.webViewController != null && urlRequest != null) {
+      // 已经初始化 webViewController 并且 urlRequest 不为空的情况下, 使用 webViewController 来更新 url
+      await widget.webViewModel.webViewController!
+          .loadUrl(urlRequest: urlRequest);
+    } else if (urlRequest != null) {
+      // 如果 urlRequest 存在, 代表初始化 webViewController
+      setState(() {
+        widget.webViewModel.url = urlRequest.url;
+      });
+    } else {
+      // 如果 urlRequest 不存在, 代表销毁 webViewController, 在
+      setState(() {
+        widget.webViewModel.url = null;
+      });
+    }
   }
 }
