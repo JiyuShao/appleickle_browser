@@ -36,41 +36,55 @@ class WebViewModel extends ChangeNotifier {
   late List<String> _javaScriptConsoleHistory;
   late List<LoadedResource> _loadedResources;
   late bool _isSecure;
+  late bool _needsToCompleteInitialLoad;
   int? windowId;
   InAppWebViewGroupOptions? options;
   InAppWebViewController? webViewController;
   Uint8List? screenshot;
-  bool needsToCompleteInitialLoad;
 
-  WebViewModel(
-      {int? tabIndex,
-      Uri? url,
-      String? title,
-      Favicon? favicon,
-      double progress = 0.0,
-      bool loaded = false,
-      bool isDesktopMode = false,
-      bool isIncognitoMode = false,
-      List<Widget>? javaScriptConsoleResults,
-      List<String>? javaScriptConsoleHistory,
-      List<LoadedResource>? loadedResources,
-      bool isSecure = false,
-      this.windowId,
-      this.options,
-      this.webViewController,
-      this.needsToCompleteInitialLoad = true}) {
+  WebViewModel({
+    int? tabIndex,
+    Uri? url,
+    String? title,
+    Favicon? favicon,
+    double? progress,
+    bool? loaded,
+    bool? isDesktopMode,
+    bool? isIncognitoMode,
+    List<Widget>? javaScriptConsoleResults,
+    List<String>? javaScriptConsoleHistory,
+    List<LoadedResource>? loadedResources,
+    bool? isSecure,
+    bool? needsToCompleteInitialLoad,
+    this.windowId,
+    this.options,
+    this.webViewController,
+  }) {
     _tabIndex = tabIndex;
     _url = url;
+    _title = title;
     _favicon = favicon;
-    _progress = progress;
-    _loaded = loaded;
-    _isDesktopMode = isDesktopMode;
-    _isIncognitoMode = isIncognitoMode;
+    _progress = progress ?? 0.0;
+    _loaded = loaded ?? false;
+    _isDesktopMode = isDesktopMode ?? false;
+    _isIncognitoMode = isIncognitoMode ?? false;
     _javaScriptConsoleResults = javaScriptConsoleResults ?? <Widget>[];
     _javaScriptConsoleHistory = javaScriptConsoleHistory ?? <String>[];
     _loadedResources = loadedResources ?? <LoadedResource>[];
-    _isSecure = isSecure;
+    _isSecure = isSecure ?? false;
+    _needsToCompleteInitialLoad = needsToCompleteInitialLoad ?? true;
+    windowId = windowId;
     options = options ?? InAppWebViewGroupOptions();
+    webViewController = webViewController;
+    screenshot = screenshot;
+  }
+
+  // 重置数据
+  reset() {
+    _url = null;
+    _progress = 0;
+    _title = null;
+    webViewController = null;
   }
 
   int? get tabIndex => _tabIndex;
@@ -195,6 +209,15 @@ class WebViewModel extends ChangeNotifier {
   set isSecure(bool value) {
     if (value != _isSecure) {
       _isSecure = value;
+      notifyListeners();
+    }
+  }
+
+  bool get needsToCompleteInitialLoad => _needsToCompleteInitialLoad;
+
+  set needsToCompleteInitialLoad(bool value) {
+    if (value != _needsToCompleteInitialLoad) {
+      _needsToCompleteInitialLoad = value;
       notifyListeners();
     }
   }

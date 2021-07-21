@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:appleickle_browser/models/app_theme_model.dart';
-import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
-import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
+import 'package:appleickle_browser/widgets/progress_indicator/progress_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/utils/url_helper.dart';
@@ -11,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
+import 'package:appleickle_browser/widgets/bottom_bar/bottom_bar.dart'
+    as bottom_bar;
 
 class WebViewScreen extends StatefulWidget {
   final GlobalKey<WebViewScreenState> key;
@@ -46,7 +46,7 @@ class WebViewScreenState extends State<WebViewScreen>
   @override
   void dispose() {
     _webViewController = null;
-    widget.webViewModel.webViewController = null;
+    widget.webViewModel.reset();
 
     _httpAuthUsernameController.dispose();
     _httpAuthPasswordController.dispose();
@@ -103,7 +103,7 @@ class WebViewScreenState extends State<WebViewScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [_buildWebView(), _buildSearchBar()]);
+    return _buildWebView();
   }
 
   // 构建 webview 区域
@@ -227,7 +227,9 @@ class WebViewScreenState extends State<WebViewScreen>
               }
             },
             onProgressChanged: (controller, progress) {
-              widget.webViewModel.progress = progress / 100;
+              setState(() {
+                widget.webViewModel.progress = progress / 100;
+              });
               updateGlobalWebViewModel();
             },
             onUpdateVisitedHistory: (controller, url, androidIsReload) async {
@@ -345,48 +347,32 @@ class WebViewScreenState extends State<WebViewScreen>
             },
           );
     return PageScaffold(
-        body: Stack(children: [
-      renderWebview,
-      _buildProgressIndicator(),
-    ]));
+      bottomArea: _buildBottomArea(),
+      body: renderWebview,
+    );
+  }
+
+  Widget _buildBottomArea() {
+    return Column(
+      children: [
+        _buildProgressIndicator(),
+        bottom_bar.BottomBar(
+          heroTag: widget.heroTag,
+          mode: bottom_bar.BottomBarMode.webview,
+          title: widget.webViewModel.title ?? '',
+          url: widget.webViewModel.url.toString(),
+        ),
+      ],
+    );
   }
 
   // 构建加载指示器
   Widget _buildProgressIndicator() {
-    return Selector<WebViewModel, double>(
-        selector: (context, webViewModel) => webViewModel.progress,
-        builder: (context, progress, child) {
-          if (progress >= 1.0) {
-            return Container();
-          }
-          return PreferredSize(
-              preferredSize: Size(double.infinity, 4.0),
-              child: SizedBox(
-                  height: 4.0,
-                  child: LinearProgressIndicator(
-                    value: progress,
-                  )));
-        });
-  }
-
-  // 构建搜索框
-  Widget _buildSearchBar() {
-    var appThemeModel = Provider.of<AppThemeModel>(context, listen: true);
-
-    return SafeArea(
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.all(appThemeModel.basePagePadding),
-        child: SearchBar(
-          searchScreenArguments: SearchScreenArguments(
-            heroTag: widget.heroTag,
-            initialAlignment: Alignment.bottomCenter,
-          ),
-          enabled: false,
-          autofocus: false,
-        ),
-      ),
-    );
+    return widget.webViewModel.progress >= 1.0
+        ? Container()
+        : ProgressBar(
+            value: widget.webViewModel.progress,
+          );
   }
 
   // 判断当前打开的 tab 是否为当前 tab
@@ -456,16 +442,16 @@ class WebViewScreenState extends State<WebViewScreen>
     return action;
   }
 
-  void onShowTab() async {
+  void onShowTab() {
     resume();
     if (widget.webViewModel.needsToCompleteInitialLoad) {
       widget.webViewModel.needsToCompleteInitialLoad = false;
-      await widget.webViewModel.webViewController
+      widget.webViewModel.webViewController
           ?.loadUrl(urlRequest: URLRequest(url: widget.webViewModel.url));
     }
   }
 
-  void onHideTab() async {
+  void onHideTab() {
     pause();
   }
 }

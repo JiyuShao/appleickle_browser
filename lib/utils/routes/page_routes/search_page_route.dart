@@ -14,7 +14,7 @@ class SearchPageRoute<T> extends CommonPageRouteBuilder<T> {
           opaque: false,
           barrierDismissible: true,
           transitionDuration: Duration(
-            milliseconds: AppThemeModel.baseAnimationDuration * 2,
+            milliseconds: AppThemeModel.baseAnimationDuration ~/ 2,
           ),
         );
 
