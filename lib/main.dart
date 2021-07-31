@@ -56,8 +56,7 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'Appleickle Browser',
             debugShowCheckedModeBanner: true,
-            theme:
-                Provider.of<AppThemeModel>(context, listen: true).materialTheme,
+            theme: AppThemeModel.materialTheme,
             // theme: ThemeData.dark(),
             initialRoute: '/',
             onGenerateRoute: RouteGenerator.generateRoute,

@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-16 10:09:44
+ * @Last Modified time: 2021-07-31 16:51:36
  */
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class _EmptyScreenState extends State<EmptyScreen>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    final appThemeModel = Provider.of<AppThemeModel>(context, listen: true);
+    final appThemeModel = AppThemeModel.of(context);
     final mq = MediaQuery.of(context);
     final topOffset = mq.size.height / 3;
 
@@ -37,37 +37,41 @@ class _EmptyScreenState extends State<EmptyScreen>
         heroTag: widget.heroTag,
         mode: bottom_bar.BottomBarMode.empty,
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(
-          appThemeModel.basePagePadding,
-          topOffset,
-          appThemeModel.basePagePadding,
-          appThemeModel.basePagePadding,
-        ),
-        alignment: Alignment.topCenter,
-        child: SearchHero(
-          heroTag: widget.heroTag,
-          flightShuttleBuilder: (
-            BuildContext flightContext,
-            Animation<double> animation,
-            HeroFlightDirection flightDirection,
-            BuildContext fromHeroContext,
-            BuildContext toHeroContext,
-          ) {
-            return SearchBar(
-              searchScreenArguments:
-                  SearchScreenArguments(heroTag: widget.heroTag),
-              enabled: false,
-              autofocus: false,
-            );
-          },
-          child: SearchBar(
-            searchScreenArguments:
-                SearchScreenArguments(heroTag: widget.heroTag),
-            enabled: false,
-            autofocus: false,
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(
+              appThemeModel.basePagePadding,
+              topOffset,
+              appThemeModel.basePagePadding,
+              appThemeModel.basePagePadding,
+            ),
+            alignment: Alignment.topCenter,
+            child: SearchHero(
+              heroTag: widget.heroTag,
+              flightShuttleBuilder: (
+                BuildContext flightContext,
+                Animation<double> animation,
+                HeroFlightDirection flightDirection,
+                BuildContext fromHeroContext,
+                BuildContext toHeroContext,
+              ) {
+                return SearchBar(
+                  searchScreenArguments:
+                      SearchScreenArguments(heroTag: widget.heroTag),
+                  enabled: false,
+                  autofocus: false,
+                );
+              },
+              child: SearchBar(
+                searchScreenArguments:
+                    SearchScreenArguments(heroTag: widget.heroTag),
+                enabled: false,
+                autofocus: false,
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
