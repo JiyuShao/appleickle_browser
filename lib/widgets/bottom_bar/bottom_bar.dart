@@ -3,15 +3,15 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-31 14:12:41
+ * @Last Modified time: 2021-07-31 17:20:26
  */
+import 'package:flutter/material.dart';
 import 'package:appleickle_browser/screens/popup_menu/popup_menu_hero.dart';
 import 'package:appleickle_browser/screens/popup_menu/popup_menu_screen.dart';
 import 'package:appleickle_browser/screens/search/search_hero.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/screens/tabs_manager/tabs_manager_screen.dart';
 import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
-import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/bottom_bar_model.dart'
     as bottom_bar_model;
 

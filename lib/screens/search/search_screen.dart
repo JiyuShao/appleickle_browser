@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-16 10:45:23
+ * @Last Modified time: 2021-07-31 16:43:56
  */
 import 'dart:math';
 
@@ -74,7 +74,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     // 获取路由参数
     var routeArgs = widget.routeArgs;
-    var appThemeModel = Provider.of<AppThemeModel>(context, listen: true);
+    var appThemeModel = AppThemeModel.of(context);
 
     return PageScaffold(
         // 键盘弹出时不需要 resize body

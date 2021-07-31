@@ -3,13 +3,15 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-07-02 17:39:20 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-02 18:05:34
+ * @Last Modified time: 2021-07-31 17:20:33
  */
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatelessWidget {
   // 页面元素
   final Widget body;
+  // 背景颜色
+  final Color? backgroundColor;
   // 自定义的 bottomArea
   final Widget? bottomArea;
   // 键盘弹出时是否 resize body
@@ -19,6 +21,7 @@ class PageScaffold extends StatelessWidget {
 
   const PageScaffold(
       {required this.body,
+      this.backgroundColor,
       this.bottomArea,
       this.resizeToAvoidBottomInset,
       this.safeAreaOptions});
@@ -54,7 +57,7 @@ class PageScaffold extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
       body: SafeArea(
         bottom: safeAreaOptions?['bottom'] == true,
         child: Column(

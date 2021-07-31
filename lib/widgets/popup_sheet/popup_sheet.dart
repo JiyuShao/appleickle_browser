@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-31 15:54:47
+ * @Last Modified time: 2021-07-31 17:27:54
  */
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +41,7 @@ class PopupSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var themeData = Theme.of(context);
     return SnappingSheet(
       lockOverflowDrag: true,
       snappingPositions: _snappingPositions,
@@ -56,10 +57,10 @@ class PopupSheet extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: themeData.backgroundColor,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
+                topLeft: Radius.circular(25),
+                topRight: Radius.circular(25),
               ),
             ),
           ),
@@ -68,7 +69,7 @@ class PopupSheet extends StatelessWidget {
             height: 5,
             width: 30,
             decoration: BoxDecoration(
-              color: Theme.of(context).hintColor,
+              color: themeData.primaryColor,
               borderRadius: BorderRadius.all(Radius.circular(30)),
             ),
           )
@@ -77,7 +78,10 @@ class PopupSheet extends StatelessWidget {
       sheetBelow: SnappingSheetContent(
         sizeBehavior: SheetSizeStatic(size: 300),
         draggable: true,
-        child: Container(color: Theme.of(context).backgroundColor),
+        child: Container(
+          color: themeData.backgroundColor,
+          child: child,
+        ),
       ),
     );
   }
