@@ -132,7 +132,7 @@ class _BrowserScreenState extends State<BrowserScreen>
             browserModel.getCurrentTabIndex();
 
         if (isCurrentTab) {
-          Future.delayed(const Duration(milliseconds: 100), () {
+          Future.delayed(Duration(milliseconds: 100), () {
             webViewTab.webViewScreenKey.currentState?.onShowTab();
           });
         } else {

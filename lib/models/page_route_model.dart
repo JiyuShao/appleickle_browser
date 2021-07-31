@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-30 15:29:29 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-12 10:29:05
+ * @Last Modified time: 2021-07-31 15:31:17
  */
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/screens/error_screen.dart';
@@ -11,6 +11,7 @@ import 'package:appleickle_browser/screens/browser/browser_screen.dart';
 import 'package:appleickle_browser/screens/not_found_screen.dart';
 import 'package:appleickle_browser/screens/popup_menu/popup_menu_screen.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
+import 'package:appleickle_browser/screens/tabs_manager/tabs_manager_screen.dart';
 import 'package:appleickle_browser/utils/routes/page_routes/fade_page_route.dart';
 import 'package:appleickle_browser/utils/routes/page_routes/popup_page_route.dart';
 import 'package:appleickle_browser/utils/routes/page_routes/search_page_route.dart';
@@ -38,42 +39,61 @@ class PageRouteModel {
 List<PageRouteModel> routeListConfig = [
   // 首页页面路径
   PageRouteModel(
-      path: BrowserScreen.routeName,
-      routeGenerator: (_) => FadePageRoute(
-          pageBuilder: (_, __, ___) => BrowserScreen(),
-          settings: RouteSettings(name: BrowserScreen.routeName))),
-
-  // 弹窗菜单路由
-  PageRouteModel(
-      path: PopupMenuScreen.routeName,
-      routeGenerator: (settings) => PopupPageRoute(
-          pageBuilder: (_, __, ___) => PopupMenuScreen(
-                routeArgs: settings.arguments as PopupMenuScreenArguments,
-              ),
-          settings: RouteSettings(name: PopupMenuScreen.routeName))),
+    path: BrowserScreen.routeName,
+    routeGenerator: (_) => FadePageRoute(
+      pageBuilder: (_, __, ___) => BrowserScreen(),
+      settings: RouteSettings(name: BrowserScreen.routeName),
+    ),
+  ),
 
   // 搜索页面路径
   PageRouteModel(
-      path: SearchScreen.routeName,
-      routeGenerator: (settings) => SearchPageRoute(
-          pageBuilder: (_, __, ___) {
-            return SearchScreen(
-              routeArgs: settings.arguments as SearchScreenArguments,
-            );
-          },
-          settings: RouteSettings(name: SearchScreen.routeName))),
+    path: SearchScreen.routeName,
+    routeGenerator: (settings) => SearchPageRoute(
+      pageBuilder: (_, __, ___) {
+        return SearchScreen(
+          routeArgs: settings.arguments as SearchScreenArguments,
+        );
+      },
+      settings: RouteSettings(name: SearchScreen.routeName),
+    ),
+  ),
+
+  // 弹窗菜单路由
+  PageRouteModel(
+    path: PopupMenuScreen.routeName,
+    routeGenerator: (settings) => PopupPageRoute(
+      pageBuilder: (_, __, ___) => PopupMenuScreen(
+        routeArgs: settings.arguments as PopupMenuScreenArguments,
+      ),
+      settings: RouteSettings(name: PopupMenuScreen.routeName),
+    ),
+  ),
+
+  // Tabs 管理页路由
+  PageRouteModel(
+    path: TabsManagerScreen.routeName,
+    routeGenerator: (settings) => PopupPageRoute(
+      pageBuilder: (_, __, ___) => TabsManagerScreen(),
+      settings: RouteSettings(name: TabsManagerScreen.routeName),
+    ),
+  ),
 ];
 
 // 错误路由
 PageRouteModel errorRouteConfig = PageRouteModel(
-    path: ErrorScreen.routeName,
-    routeGenerator: (_) => FadePageRoute(
-        pageBuilder: (_, __, ___) => ErrorScreen(),
-        settings: RouteSettings(name: ErrorScreen.routeName)));
+  path: ErrorScreen.routeName,
+  routeGenerator: (_) => FadePageRoute(
+    pageBuilder: (_, __, ___) => ErrorScreen(),
+    settings: RouteSettings(name: ErrorScreen.routeName),
+  ),
+);
 
 // 404 路由
 PageRouteModel notFoundRouteConfig = PageRouteModel(
-    path: NotFoundScreen.routeName,
-    routeGenerator: (_) => FadePageRoute(
-        pageBuilder: (_, __, ___) => NotFoundScreen(),
-        settings: RouteSettings(name: NotFoundScreen.routeName)));
+  path: NotFoundScreen.routeName,
+  routeGenerator: (_) => FadePageRoute(
+    pageBuilder: (_, __, ___) => NotFoundScreen(),
+    settings: RouteSettings(name: NotFoundScreen.routeName),
+  ),
+);
