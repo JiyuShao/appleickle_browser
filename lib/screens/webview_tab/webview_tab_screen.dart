@@ -64,7 +64,8 @@ class WebViewTabScreenState extends State<WebViewTabScreen>
         widget.webViewModel.url = urlRequest.url;
       });
     } else {
-      // 如果 urlRequest 不存在, 代表销毁 webViewController, 在
+      // 如果 urlRequest 不存在, 代表销毁 webViewController, 
+      // 会触发 WebViewScreen.dispose 和 webViewModel.reset 逻辑
       setState(() {
         widget.webViewModel.url = null;
       });
