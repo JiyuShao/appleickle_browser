@@ -3,11 +3,11 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-07-02 17:39:20 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-16 11:32:02
+ * @Last Modified time: 2021-08-14 16:02:57
  */
+import 'package:flutter/material.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/utils/logger.dart';
-import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:appleickle_browser/utils/debounce.dart';
 

@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
-import 'package:appleickle_browser/widgets/progress_indicator/progress_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:appleickle_browser/utils/url_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
+import 'package:appleickle_browser/widgets/progress_indicator/progress_indicator.dart';
+import 'package:appleickle_browser/utils/url_helper.dart';
 import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
 import 'package:appleickle_browser/widgets/bottom_bar/bottom_bar.dart'
@@ -319,15 +319,8 @@ class WebViewScreenState extends State<WebViewScreen>
               updateGlobalWebViewModel();
             },
             onCreateWindow: (controller, createWindowRequest) async {
-              // var webViewTab = WebViewTabScreen(
-              //   key: GlobalKey(),
-              //   webViewModel:
-              //       WebViewModel(windowId: createWindowRequest.windowId),
-              // );
-
-              // browserModel.addTab(webViewTab);
-
-              // return true;
+              browserModel.addNewTab(windowId: createWindowRequest.windowId);
+              return true;
             },
             onCloseWindow: (controller) {},
             androidOnPermissionRequest: (InAppWebViewController controller,

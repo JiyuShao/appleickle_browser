@@ -29,7 +29,7 @@ class PopupPageRoute<T> extends CommonPageRouteBuilder<T> {
             milliseconds: AppThemeModel.baseAnimationDuration,
           ),
           reverseTransitionDuration: Duration(
-            milliseconds: AppThemeModel.baseAnimationDuration,
+            milliseconds: AppThemeModel.baseAnimationDuration * 2,
           ),
         );
 

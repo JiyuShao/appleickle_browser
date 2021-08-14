@@ -1,10 +1,11 @@
-import 'package:appleickle_browser/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'models/app_theme_model.dart';
 import 'models/browser_model.dart';
 import 'models/webview_model.dart';
+import 'utils/logger.dart';
+// import 'utils/trim.dart';
 import 'utils/routes/routes_generator.dart';
 
 void main() async {
@@ -40,8 +41,13 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<WebViewModel, BrowserModel>(
           update: (context, webViewModel, browserModel) {
-            // loggerNoStack.d(
-            //     '更新 BrowserModel 的 webViewModel: {tabIndex: ${webViewModel.tabIndex}, url: ${webViewModel.url}}');
+            // loggerNoStack.d(Trim.trimMultilineMargin('''
+            //   更新 BrowserModel 的 webViewModel: {
+            //     tabIndex: ${webViewModel.tabIndex},
+            //     url: ${webViewModel.url},
+            //     tabs: ${browserModel?.webViewTabs},
+            //   }
+            // '''));
             browserModel!.setCurrentWebViewModel(webViewModel);
             return browserModel;
           },

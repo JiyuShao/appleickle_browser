@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 19:18:14 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-15 19:20:03
+ * @Last Modified time: 2021-08-14 17:19:11
  */
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/bottom_bar_model.dart'
@@ -23,6 +23,7 @@ class BottomBarItem extends StatefulWidget {
   final Function() handleTap;
   // 触发切换逻辑
   final Function() handleChange;
+
   @override
   _BottomBarItemState createState() => _BottomBarItemState();
 }

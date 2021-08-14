@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-31 17:20:26
+ * @Last Modified time: 2021-08-14 15:46:15
  */
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/screens/popup_menu/popup_menu_hero.dart';
@@ -102,8 +102,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
       bottomBarItemList = [
         bottom_bar_model.BottomBarItemModel(
           index: 0,
-          imagePath: 'assets/images/tabs/tabs.png',
-          selectedImagePath: 'assets/images/tabs/tabs.png',
+          imagePath: 'assets/images/bottom_bar/tabs.png',
+          selectedImagePath: 'assets/images/bottom_bar/tabs.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
@@ -112,8 +112,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
         bottom_bar_model.BottomBarItemModel(
           index: 1,
           diableChange: true,
-          imagePath: 'assets/images/tabs/settings.png',
-          selectedImagePath: 'assets/images/tabs/settings.png',
+          imagePath: 'assets/images/bottom_bar/settings.png',
+          selectedImagePath: 'assets/images/bottom_bar/settings.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(
@@ -131,8 +131,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
       bottomBarItemList = [
         bottom_bar_model.BottomBarItemModel(
           index: 0,
-          imagePath: 'assets/images/tabs/tabs.png',
-          selectedImagePath: 'assets/images/tabs/tabs.png',
+          imagePath: 'assets/images/bottom_bar/tabs.png',
+          selectedImagePath: 'assets/images/bottom_bar/tabs.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
@@ -155,8 +155,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
         bottom_bar_model.BottomBarItemModel(
           index: 1,
           diableChange: true,
-          imagePath: 'assets/images/tabs/settings.png',
-          selectedImagePath: 'assets/images/tabs/settings.png',
+          imagePath: 'assets/images/bottom_bar/settings.png',
+          selectedImagePath: 'assets/images/bottom_bar/settings.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(

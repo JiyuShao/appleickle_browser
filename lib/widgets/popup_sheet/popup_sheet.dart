@@ -3,17 +3,23 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-31 17:27:54
+ * @Last Modified time: 2021-08-14 17:05:30
  */
-import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:snapping_sheet/snapping_sheet.dart';
+import 'package:appleickle_browser/models/app_theme_model.dart';
 
 class PopupSheet extends StatelessWidget {
   // 页面元素
   final Widget child;
+  // 滚动控制器
+  final ScrollController? scrollController;
 
-  PopupSheet({Key? key, required this.child}) : super(key: key);
+  PopupSheet({
+    Key? key,
+    required this.child,
+    this.scrollController,
+  }) : super(key: key);
 
   final List<SnappingPosition> _snappingPositions = [
     SnappingPosition.factor(
@@ -43,6 +49,7 @@ class PopupSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     var themeData = Theme.of(context);
     return SnappingSheet(
+      // 不允许拖拽超出允许区域
       lockOverflowDrag: true,
       snappingPositions: _snappingPositions,
       onSnapCompleted: (positionData, _) {
@@ -75,8 +82,19 @@ class PopupSheet extends StatelessWidget {
           )
         ],
       ),
+      sheetAbove: SnappingSheetContent(
+        sizeBehavior: SheetSizeFill(),
+        draggable: false,
+        child: GestureDetector(
+          child: Container(color: Colors.transparent),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       sheetBelow: SnappingSheetContent(
-        sizeBehavior: SheetSizeStatic(size: 300),
+        childScrollController: scrollController,
+        sizeBehavior: SheetSizeFill(),
         draggable: true,
         child: Container(
           color: themeData.backgroundColor,

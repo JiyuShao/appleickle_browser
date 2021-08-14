@@ -1,14 +1,17 @@
-import 'package:appleickle_browser/screens/webview_tab/empty_screen.dart';
-import 'package:appleickle_browser/screens/webview_tab/webview_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:appleickle_browser/screens/webview_tab/empty_screen.dart';
+import 'package:appleickle_browser/screens/webview_tab/webview_screen.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WebViewTabScreen extends StatefulWidget {
   // 创建空的 tab 页面
-  static WebViewTabScreen createEmptyWebViewTabScreen() {
-    return WebViewTabScreen(key: GlobalKey(), webViewModel: WebViewModel());
+  static WebViewTabScreen createEmptyWebViewTabScreen({int? windowId}) {
+    return WebViewTabScreen(
+      key: GlobalKey(),
+      webViewModel: WebViewModel(windowId: windowId),
+    );
   }
 
   // 用户获取对应的 WebViewTabScreen state
@@ -64,7 +67,7 @@ class WebViewTabScreenState extends State<WebViewTabScreen>
         widget.webViewModel.url = urlRequest.url;
       });
     } else {
-      // 如果 urlRequest 不存在, 代表销毁 webViewController, 
+      // 如果 urlRequest 不存在, 代表销毁 webViewController,
       // 会触发 WebViewScreen.dispose 和 webViewModel.reset 逻辑
       setState(() {
         widget.webViewModel.url = null;
