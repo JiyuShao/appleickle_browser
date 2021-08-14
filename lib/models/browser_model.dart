@@ -78,6 +78,12 @@ class BrowserModel extends ChangeNotifier {
   UnmodifiableListView<WebViewTabScreen> get webViewTabs =>
       UnmodifiableListView(_webViewTabs);
 
+  // 添加新的 tab
+  void addNewTab({int? windowId}) {
+    addTab(WebViewTabScreen.createEmptyWebViewTabScreen(windowId: windowId));
+  }
+
+  // 添加 tab
   void addTab(WebViewTabScreen webViewTab) {
     _webViewTabs.add(webViewTab);
     _currentTabIndex = _webViewTabs.length - 1;
@@ -89,6 +95,7 @@ class BrowserModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 添加 tab 列表
   void addTabs(List<WebViewTabScreen> webViewTabs) {
     for (var webViewTab in webViewTabs) {
       _webViewTabs.add(webViewTab);
@@ -119,7 +126,7 @@ class BrowserModel extends ChangeNotifier {
 
     // 如果关闭当前页面后 tab 页面列表为空的话, 添加新的页面
     if (_webViewTabs.isEmpty) {
-      addTab(WebViewTabScreen.createEmptyWebViewTabScreen());
+      addNewTab();
     } else {
       notifyListeners();
     }
@@ -182,9 +189,8 @@ class BrowserModel extends ChangeNotifier {
   }
 
   Future<void> flush() async {
-    // 为方便调试, 先禁止保存
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.setString("browser", json.encode(toJson()));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("browser", json.encode(toJson()));
   }
 
   Future<void> restore() async {
