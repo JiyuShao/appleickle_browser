@@ -75,9 +75,6 @@ class BrowserModel extends ChangeNotifier {
     }
   }
 
-  UnmodifiableListView<WebViewTabScreen> get webViewTabs =>
-      UnmodifiableListView(_webViewTabs);
-
   // 添加新的 tab
   void addNewTab({int? windowId}) {
     addTab(WebViewTabScreen.createEmptyWebViewTabScreen(windowId: windowId));
@@ -88,11 +85,10 @@ class BrowserModel extends ChangeNotifier {
     _webViewTabs.add(webViewTab);
     _currentTabIndex = _webViewTabs.length - 1;
     webViewTab.webViewModel.tabIndex = _currentTabIndex;
-
     _currentWebViewModel.updateWithValue(webViewTab.webViewModel);
-    loggerNoStack.d('添加 WebView Tab $webViewTab');
-
     notifyListeners();
+
+    loggerNoStack.d('添加 WebView Tab: { index: $_currentTabIndex }');
   }
 
   // 添加 tab 列表
@@ -110,6 +106,11 @@ class BrowserModel extends ChangeNotifier {
   }
 
   void closeTab(int index) {
+    var currentDeletingWebViewModel = _webViewTabs[index].webViewModel;
+    loggerNoStack.d(
+        '关闭 WebView Tab: { index: $index, title: ${currentDeletingWebViewModel.title}, url:${currentDeletingWebViewModel.url} }');
+
+    // 删除页面
     _webViewTabs.removeAt(index);
     _currentTabIndex = _webViewTabs.length - 1;
 
@@ -126,6 +127,7 @@ class BrowserModel extends ChangeNotifier {
 
     // 如果关闭当前页面后 tab 页面列表为空的话, 添加新的页面
     if (_webViewTabs.isEmpty) {
+      loggerNoStack.d('WebView Tab 栈已空, 添加新 Tab');
       addNewTab();
     } else {
       notifyListeners();
@@ -133,13 +135,20 @@ class BrowserModel extends ChangeNotifier {
   }
 
   void showTab(int index) {
-    if (_currentTabIndex != index) {
-      _currentTabIndex = index;
-      _currentWebViewModel
-          .updateWithValue(_webViewTabs[_currentTabIndex].webViewModel);
-
-      notifyListeners();
+    if (_currentTabIndex == index) {
+      loggerNoStack.d('展示 WebView Tab: 当前已是展示页面, 不需要切换');
+      return;
     }
+
+    // 获取当前展示的页面
+    var currentWebViewModel = _webViewTabs[index].webViewModel;
+    loggerNoStack.d(
+        '展示 WebView Tab: { index: ${currentWebViewModel.tabIndex}, title: ${currentWebViewModel.title}, url:${currentWebViewModel.url} }');
+
+    // 切换页面
+    _currentTabIndex = index;
+    _currentWebViewModel.updateWithValue(currentWebViewModel);
+    notifyListeners();
   }
 
   void closeAllTabs() {
@@ -150,14 +159,22 @@ class BrowserModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 获取所有的 tabs
+  UnmodifiableListView<WebViewTabScreen> get webViewTabs =>
+      UnmodifiableListView(_webViewTabs);
+
+  // 获取当前 tabs 数量
   int getTabsLength() => _webViewTabs.length;
 
+  // 获取当前 tabs index
   int getCurrentTabIndex() => _currentTabIndex;
 
+  // 获取当前 tab
   WebViewTabScreen? getCurrentTab() {
     return _currentTabIndex >= 0 ? _webViewTabs[_currentTabIndex] : null;
   }
 
+  // 获取浏览器配置
   BrowserSettingsModel getSettings() {
     return _settings.copy();
   }

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:appleickle_browser/utils/logger.dart';
 import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 import 'package:appleickle_browser/widgets/progress_indicator/progress_indicator.dart';
 import 'package:appleickle_browser/utils/url_helper.dart';
@@ -266,8 +267,16 @@ class WebViewScreenState extends State<WebViewScreen>
                   action: ServerTrustAuthResponseAction.PROCEED);
             },
             onLoadError: (controller, url, code, message) async {
+              // 不支持的 scheme
+              if (url != null && ['http', 'https'].indexOf(url.scheme) == -1) {
+                logger.w('不支持的 URI Scheme: ${url.scheme}, URL: $url');
+                if (await controller.canGoBack()) {
+                  controller.goBack();
+                }
+                return;
+              }
+              // NSURLErrorDomain
               if (Platform.isIOS && code == -999) {
-                // NSURLErrorDomain
                 return;
               }
 
