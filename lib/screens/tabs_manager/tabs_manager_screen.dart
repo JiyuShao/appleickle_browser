@@ -50,6 +50,8 @@ class _TabsManagerScreenState extends State<TabsManagerScreen> {
 
   Widget _buildTabList(List<WebViewTabScreen> webViewTabs) {
     var themeData = Theme.of(context);
+    var browserModel = Provider.of<BrowserModel>(context, listen: true);
+
     return ListView.builder(
       controller: _scrollController,
       itemCount: webViewTabs.length,
@@ -66,6 +68,7 @@ class _TabsManagerScreenState extends State<TabsManagerScreen> {
               _handleShowTab(index);
             },
             child: TabManagerItem(
+              selected: index == browserModel.getCurrentTabIndex(),
               webViewModel: currentTab.webViewModel,
             ),
           ),

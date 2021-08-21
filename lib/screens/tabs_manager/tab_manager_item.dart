@@ -9,10 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
 
 class TabManagerItem extends StatelessWidget {
+  // 是否选中
+  final bool selected;
+
   // 页面元素
   final WebViewModel webViewModel;
 
-  const TabManagerItem({
+  TabManagerItem({
+    required this.selected,
     required this.webViewModel,
   });
 
@@ -35,12 +39,10 @@ class TabManagerItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       decoration: BoxDecoration(
-          border: Border(
-        top: BorderSide(
-          width: 1,
-          color: Colors.black.withOpacity(0.05),
-        ),
-      )),
+        color: selected
+            ? themeData.primaryColorLight.withOpacity(0.2)
+            : Colors.transparent,
+      ),
       child: Row(
         children: [
           // 缩略图
