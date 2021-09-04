@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-30 15:29:29 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-07-31 15:31:17
+ * @Last Modified time: 2021-09-04 15:00:17
  */
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/screens/error_screen.dart';
@@ -12,6 +12,7 @@ import 'package:appleickle_browser/screens/not_found_screen.dart';
 import 'package:appleickle_browser/screens/popup_menu/popup_menu_screen.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/screens/tabs_manager/tabs_manager_screen.dart';
+import 'package:appleickle_browser/screens/trex_game_screen.dart';
 import 'package:appleickle_browser/utils/routes/page_routes/fade_page_route.dart';
 import 'package:appleickle_browser/utils/routes/page_routes/popup_page_route.dart';
 import 'package:appleickle_browser/utils/routes/page_routes/search_page_route.dart';
@@ -76,6 +77,15 @@ List<PageRouteModel> routeListConfig = [
     routeGenerator: (settings) => PopupPageRoute(
       pageBuilder: (_, __, ___) => TabsManagerScreen(),
       settings: RouteSettings(name: TabsManagerScreen.routeName),
+    ),
+  ),
+
+  // TRex Game 路由
+  PageRouteModel(
+    path: TRexGameScreen.routeName,
+    routeGenerator: (_) => FadePageRoute(
+      pageBuilder: (_, __, ___) => TRexGameScreen(),
+      settings: RouteSettings(name: TRexGameScreen.routeName),
     ),
   ),
 ];

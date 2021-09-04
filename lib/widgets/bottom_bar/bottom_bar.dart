@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-08-14 15:46:15
+ * @Last Modified time: 2021-09-04 15:30:08
  */
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/screens/popup_menu/popup_menu_hero.dart';
@@ -60,36 +60,33 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
       color: Theme.of(context).backgroundColor,
       child: Column(
         children: <Widget>[
-          SizedBox(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-              child: Row(
-                children: _getBottomBarItemList().map((currentItem) {
-                  // 允许渲染 BottomBarItem 或者自定义的组件
-                  if (!(currentItem is bottom_bar_model.BottomBarItemModel) &&
-                      currentItem is Widget) {
-                    return Expanded(
-                      child: currentItem,
-                    );
-                  }
-                  Widget currentResult = BottomBarItem(
-                      tabItemData: currentItem,
-                      handleTap: () {
-                        handleTapTab(currentItem);
-                      },
-                      handleChange: () {
-                        handleSwitchTab(currentItem);
-                      });
-                  // 使用自定义的渲染器
-                  if (currentItem.builder != null) {
-                    currentResult =
-                        currentItem.builder!(context, currentResult);
-                  }
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+            child: Row(
+              children: _getBottomBarItemList().map((currentItem) {
+                // 允许渲染 BottomBarItem 或者自定义的组件
+                if (!(currentItem is bottom_bar_model.BottomBarItemModel) &&
+                    currentItem is Widget) {
                   return Expanded(
-                    child: currentResult,
+                    child: currentItem,
                   );
-                }).toList(),
-              ),
+                }
+                Widget currentResult = BottomBarItem(
+                    tabItemData: currentItem,
+                    handleTap: () {
+                      handleTapTab(currentItem);
+                    },
+                    handleChange: () {
+                      handleSwitchTab(currentItem);
+                    });
+                // 使用自定义的渲染器
+                if (currentItem.builder != null) {
+                  currentResult = currentItem.builder!(context, currentResult);
+                }
+                return Expanded(
+                  child: currentResult,
+                );
+              }).toList(),
             ),
           )
         ],
