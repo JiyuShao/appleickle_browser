@@ -41,8 +41,8 @@ class GameOverText extends SpriteComponent {
             spriteImage,
             srcPosition: Vector2(955.0, 26.0),
             srcSize: Vector2(
-              config.textWidth,
-              config.textHeight,
+              382.0,
+              25.0,
             ),
           ),
         );

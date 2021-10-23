@@ -14,8 +14,7 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
   TRexStatus status = TRexStatus.waiting;
   bool isIdle = true;
 
-  double jumpVelocity = 0.0;
-  bool reachedMinHeight = false;
+  double jumpVelocity = 0;
   int jumpCount = 0;
   bool hasPlayedIntro = false;
 
@@ -24,26 +23,30 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
     config: config,
     showFor: [TRexStatus.waiting],
     spriteImage: gameRef.spriteImage,
-    srcPosition: Vector2(76.0, 6.0),
+    srcPosition: Vector2(1339.0, 2.0),
+    srcSize: Vector2(86.0, 94.0),
   );
   late final TRexStateAnimatedComponent runningTRex =
       TRexStateAnimatedComponent(
+    config: config,
     showFor: [TRexStatus.running, TRexStatus.intro],
     spriteImage: gameRef.spriteImage,
-    frames: [Vector2(1514.0, 4.0), Vector2(1602.0, 4.0)],
-    config: config,
+    frames: [Vector2(1515.0, 2.0), Vector2(1603.0, 2.0)],
+    srcSize: Vector2(86.0, 94.0),
   );
   late final TRexStateStillComponent jumpingTRex = TRexStateStillComponent(
     config: config,
     showFor: [TRexStatus.jumping],
     spriteImage: gameRef.spriteImage,
-    srcPosition: Vector2(1339.0, 6.0),
+    srcPosition: Vector2(1339.0, 2.0),
+    srcSize: Vector2(86.0, 94.0),
   );
   late final TRexStateStillComponent surprisedTRex = TRexStateStillComponent(
     config: config,
     showFor: [TRexStatus.crashed],
     spriteImage: gameRef.spriteImage,
-    srcPosition: Vector2(1782.0, 6.0),
+    srcPosition: Vector2(1782.0, 2.0),
+    srcSize: Vector2(83.0, 94.0),
   );
 
   bool get playingIntro => status == TRexStatus.intro;
@@ -68,9 +71,7 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
     }
 
     status = TRexStatus.jumping;
-    jumpVelocity = -(speed / 10);
-
-    reachedMinHeight = false;
+    jumpVelocity = config.jumpVelocity;
   }
 
   void reset() {
@@ -84,7 +85,7 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
   void update(double dt) {
     if (status == TRexStatus.jumping) {
       y += jumpVelocity;
-      jumpVelocity += config.gravity;
+      jumpVelocity += gameRef.config.gravity;
       if (y > groundYPos) {
         reset();
         jumpCount++;
@@ -135,6 +136,8 @@ class TRexStateStillComponent extends SpriteComponent with TRexStateVisibility {
     required Image spriteImage,
     // 精灵图位置
     required Vector2 srcPosition,
+    // 精灵图大小
+    required Vector2 srcSize,
     // TRex 配置
     required TRexConfig config,
   }) : super(
@@ -142,7 +145,7 @@ class TRexStateStillComponent extends SpriteComponent with TRexStateVisibility {
           sprite: Sprite(
             spriteImage,
             srcPosition: srcPosition,
-            srcSize: Vector2(87.0, 90.0),
+            srcSize: srcSize,
           ),
         ) {
     this.showFor = showFor;
@@ -158,6 +161,8 @@ class TRexStateAnimatedComponent extends SpriteAnimationComponent
     required Image spriteImage,
     // 精灵图位置列表
     required List<Vector2> frames,
+    // 精灵图大小
+    required Vector2 srcSize,
     // TRex 配置
     required TRexConfig config,
   }) : super(
@@ -166,7 +171,7 @@ class TRexStateAnimatedComponent extends SpriteAnimationComponent
             frames
                 .map((vector) => Sprite(
                       spriteImage,
-                      srcSize: Vector2(87.0, 90.0),
+                      srcSize: srcSize,
                       srcPosition: vector,
                     ))
                 .toList(),

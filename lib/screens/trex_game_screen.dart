@@ -10,6 +10,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 import 'package:appleickle_browser/widgets/trex_game/game.dart';
 
 class TRexGameScreen extends StatefulWidget {
@@ -67,14 +68,10 @@ class _TRexGameScreenState extends State<TRexGameScreen> {
       onKey: onRawKeyEvent,
       child: GestureDetector(
         onTap: triggerGameAction,
-        child: Container(
-          alignment: Alignment.center,
-          color: Colors.redAccent,
-          child: AspectRatio(
-              aspectRatio: 1,
-              child: GameWidget(
-                game: game!,
-              )),
+        child: PageScaffold(
+          body: GameWidget(
+            game: game!,
+          ),
         ),
       ),
     );
