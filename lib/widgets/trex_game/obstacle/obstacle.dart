@@ -85,8 +85,7 @@ class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
   }
 
   void reset() {
-    // TODO
-    // clearChildren();
+    clearChildren();
     history.clear();
   }
 }

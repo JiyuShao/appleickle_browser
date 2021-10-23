@@ -3,8 +3,8 @@ import 'package:flame/components.dart';
 import '../collision/collision_box.dart';
 
 class TRexConfig {
-  // 重力加速度
-  final double gravity = 1.2;
+  // 初始起跳速度
+  final double jumpVelocity = -17;
   // 起始点位置
   final double startXPos = 50.0;
   // 从头跑到起始点的时间(s)
