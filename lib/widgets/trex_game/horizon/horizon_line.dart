@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 
 import '../obstacle/obstacle.dart';
@@ -6,29 +8,38 @@ import 'clouds.dart';
 import 'config.dart';
 
 class HorizonLine extends PositionComponent with HasGameRef<TRexGame> {
-  late final dimensions = HorizonDimensions();
-
-  late final _softSprite = Sprite(
-    gameRef.spriteImage,
-    srcPosition: Vector2(2.0, 104.0),
-    srcSize: Vector2(dimensions.width, dimensions.height),
-  );
-
-  late final _bumpySprite = Sprite(
-    gameRef.spriteImage,
-    srcPosition: Vector2(2.0 + dimensions.width, 104.0),
-    srcSize: Vector2(dimensions.width, dimensions.height),
-  );
+  final config = HorizonConfig();
 
   // grounds
-  late final firstGround = HorizonGround(_softSprite, dimensions);
-  late final secondGround = HorizonGround(_bumpySprite, dimensions);
-  late final thirdGround = HorizonGround(_softSprite, dimensions);
+  late final firstGround = SpriteComponent(
+    size: Vector2(config.width, config.height),
+    sprite: Sprite(
+      gameRef.spriteImage,
+      srcPosition: Vector2(2.0, 104.0),
+      srcSize: Vector2(1200.0, 24.0),
+    ),
+  );
+  late final secondGround = SpriteComponent(
+    size: Vector2(config.width, config.height),
+    sprite: Sprite(
+      gameRef.spriteImage,
+      srcPosition: Vector2(2.0 + 1200.0, 104.0),
+      srcSize: Vector2(1200.0, 24.0),
+    ),
+  );
+  late final thirdGround = SpriteComponent(
+    size: Vector2(config.width, config.height),
+    sprite: Sprite(
+      gameRef.spriteImage,
+      srcPosition: Vector2(2.0, 104.0),
+      srcSize: Vector2(1200.0, 24.0),
+    ),
+  );
 
   // children
   late final CloudManager cloudManager =
       CloudManager(horizonConfig: HorizonConfig());
-  late final ObstacleManager obstacleManager = ObstacleManager(dimensions);
+  late final ObstacleManager obstacleManager = ObstacleManager(config);
 
   @override
   void onMount() {
@@ -48,18 +59,18 @@ class HorizonLine extends PositionComponent with HasGameRef<TRexGame> {
     final third = grounds[(indexFirst + 2) % 3];
 
     first.x -= increment;
-    second.x = first.x + dimensions.width;
-    third.x = second.x + dimensions.width;
+    second.x = first.x + config.width;
+    third.x = second.x + config.width;
 
-    if (first.x <= -dimensions.width) {
-      first.x += dimensions.width * 3;
+    if (first.x <= -config.width) {
+      first.x += config.width * 3;
     }
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    final increment = gameRef.currentSpeed * 50 * dt;
+    final increment = gameRef.currentSpeed * dt;
     final index = firstGround.x <= 0
         ? 0
         : secondGround.x <= 0
@@ -73,14 +84,24 @@ class HorizonLine extends PositionComponent with HasGameRef<TRexGame> {
     obstacleManager.reset();
 
     firstGround.x = 0.0;
-    secondGround.x = dimensions.width;
+    secondGround.x = config.width;
   }
 }
 
 class HorizonGround extends SpriteComponent {
-  HorizonGround(Sprite sprite, HorizonDimensions dimensions)
-      : super(
-          size: Vector2(dimensions.width, dimensions.height),
-          sprite: sprite,
+  HorizonGround({
+    // 精灵图
+    required Image spriteImage,
+    // 精灵图位置
+    required Vector2 srcPosition,
+    // TRex 配置
+    required HorizonConfig config,
+  }) : super(
+          size: Vector2(config.width, config.height),
+          sprite: Sprite(
+            spriteImage,
+            srcPosition: srcPosition,
+            srcSize: Vector2(1200.0, 24.0),
+          ),
         );
 }

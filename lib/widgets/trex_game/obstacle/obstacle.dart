@@ -11,16 +11,17 @@ import 'config.dart';
 import 'obstacle_type.dart';
 
 class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
-  ObstacleManager(this.dimensions);
+  ObstacleManager(this.hrizonConfig);
 
   ListQueue<ObstacleType> history = ListQueue();
-  final HorizonDimensions dimensions;
+  final ObstacleConfig config = ObstacleConfig();
+  final HorizonConfig hrizonConfig;
 
   @override
   void update(double dt) {
     for (final c in children) {
-      final cloud = c as Obstacle;
-      cloud.y = y + cloud.type.y - 75;
+      final obstacle = c as Obstacle;
+      obstacle.y = y - obstacle.type.height * 0.75;
     }
 
     final speed = gameRef.currentSpeed;
@@ -32,7 +33,7 @@ class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
           !lastObstacle.followingObstacleCreated &&
           lastObstacle.isVisible &&
           (lastObstacle.x + lastObstacle.width + lastObstacle.gap) <
-              dimensions.width) {
+              hrizonConfig.width) {
         addNewObstacle(speed);
         lastObstacle.followingObstacleCreated = true;
       }
@@ -57,8 +58,8 @@ class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
         type: type,
         spriteImage: gameRef.spriteImage,
         speed: speed,
-        gapCoefficient: gameRef.config.gapCoefficient,
-        dimensions: dimensions,
+        gapCoefficient: config.gapCoefficient,
+        hrizonConfig: hrizonConfig,
       );
 
       obstacle.x = gameRef.size.x;
@@ -68,7 +69,7 @@ class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
       history.addFirst(type);
       if (history.length > 1) {
         final sublist =
-            history.toList().sublist(0, gameRef.config.maxObstacleDuplication);
+            history.toList().sublist(0, config.maxObstacleDuplication);
         history = ListQueue.from(sublist);
       }
     }
@@ -80,40 +81,43 @@ class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
     for (final c in history) {
       duplicateCount += c.type == nextType.type ? 1 : 0;
     }
-    return duplicateCount >= gameRef.config.maxObstacleDuplication;
+    return duplicateCount >= config.maxObstacleDuplication;
   }
 
   void reset() {
+    // TODO
     // clearChildren();
     history.clear();
   }
 }
 
+// 障碍物
 class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
   Obstacle({
     required this.type,
     required Image spriteImage,
     required double speed,
     required double gapCoefficient,
-    required HorizonDimensions dimensions,
-    double xOffset = 0.0,
+    required HorizonConfig hrizonConfig,
   }) : super(
           sprite: type.getSprite(spriteImage),
         ) {
-    x = dimensions.width + xOffset;
+    // 设置障碍物位置
+    x = hrizonConfig.width;
 
-    if (internalSize > 1 && type.multipleSpeed > speed) {
-      internalSize = 1;
-    }
-
+    // 根据障碍物数量, 设置障碍物宽度
     width = type.width * internalSize;
     height = type.height;
+
+    // 设置在屏幕上有障碍物的情况下, 与下一个障碍物的间隔
     gap = computeGap(gapCoefficient, speed);
+
+    // 设置雪碧图的位置和大小
     final actualSrc = sprite!.src;
     sprite!.src = Rect.fromLTWH(
       actualSrc.left,
       actualSrc.top,
-      width,
+      actualSrc.width * internalSize,
       actualSrc.height,
     );
   }
@@ -121,6 +125,7 @@ class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
   final ObstacleConfig config = ObstacleConfig();
 
   bool followingObstacleCreated = false;
+
   late double gap;
 
   late int internalSize = getRandomNum(
@@ -149,7 +154,7 @@ class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
       return;
     }
 
-    final increment = gameRef.currentSpeed * 50 * dt;
+    final increment = gameRef.currentSpeed * dt;
     x -= increment;
 
     if (!isVisible) {
