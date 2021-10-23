@@ -20,12 +20,30 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
   bool hasPlayedIntro = false;
 
   // ref to children
-  late final WaitingTRex idleDino = WaitingTRex(gameRef.spriteImage, config);
-  late final RunningTRex runningDino = RunningTRex(gameRef.spriteImage, config);
-  late final JumpingTRex jumpingTRex = JumpingTRex(gameRef.spriteImage, config);
-  late final SurprisedTRex surprisedTRex = SurprisedTRex(
-    gameRef.spriteImage,
-    config,
+  late final TRexStateStillComponent waitingTRex = TRexStateStillComponent(
+    config: config,
+    showFor: [TRexStatus.waiting],
+    spriteImage: gameRef.spriteImage,
+    srcPosition: Vector2(76.0, 6.0),
+  );
+  late final TRexStateAnimatedComponent runningTRex =
+      TRexStateAnimatedComponent(
+    showFor: [TRexStatus.running, TRexStatus.intro],
+    spriteImage: gameRef.spriteImage,
+    frames: [Vector2(1514.0, 4.0), Vector2(1602.0, 4.0)],
+    config: config,
+  );
+  late final TRexStateStillComponent jumpingTRex = TRexStateStillComponent(
+    config: config,
+    showFor: [TRexStatus.jumping],
+    spriteImage: gameRef.spriteImage,
+    srcPosition: Vector2(1339.0, 6.0),
+  );
+  late final TRexStateStillComponent surprisedTRex = TRexStateStillComponent(
+    config: config,
+    showFor: [TRexStatus.crashed],
+    spriteImage: gameRef.spriteImage,
+    srcPosition: Vector2(1782.0, 6.0),
   );
 
   bool get playingIntro => status == TRexStatus.intro;
@@ -38,8 +56,8 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
 
   @override
   Future? onLoad() {
-    addChild(idleDino);
-    addChild(runningDino);
+    addChild(waitingTRex);
+    addChild(runningTRex);
     addChild(jumpingTRex);
     addChild(surprisedTRex);
   }
@@ -50,7 +68,7 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
     }
 
     status = TRexStatus.jumping;
-    jumpVelocity = config.initialJumpVelocity - (speed / 10);
+    jumpVelocity = -(speed / 10);
 
     reachedMinHeight = false;
   }
@@ -80,7 +98,7 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
       status = TRexStatus.intro;
     }
     if (playingIntro && x < config.startXPos) {
-      x += (config.startXPos / config.introDuration) * dt * 5000;
+      x += (config.startXPos * dt) / config.startDuration;
     }
     super.update(dt);
   }
@@ -111,16 +129,20 @@ mixin TRexStateVisibility on BaseComponent {
 /// A component superclass for TRex states with still sprites
 class TRexStateStillComponent extends SpriteComponent with TRexStateVisibility {
   TRexStateStillComponent({
+    // 需要展示的状态列表
     required List<TRexStatus> showFor,
+    // 精灵图
     required Image spriteImage,
-    required TRexConfig config,
+    // 精灵图位置
     required Vector2 srcPosition,
+    // TRex 配置
+    required TRexConfig config,
   }) : super(
           size: Vector2(config.width, config.height),
           sprite: Sprite(
             spriteImage,
             srcPosition: srcPosition,
-            srcSize: Vector2(config.width, config.height),
+            srcSize: Vector2(87.0, 90.0),
           ),
         ) {
     this.showFor = showFor;
@@ -130,68 +152,28 @@ class TRexStateStillComponent extends SpriteComponent with TRexStateVisibility {
 class TRexStateAnimatedComponent extends SpriteAnimationComponent
     with TRexStateVisibility {
   TRexStateAnimatedComponent({
+    // 需要展示的状态列表
     required List<TRexStatus> showFor,
+    // 精灵图
     required Image spriteImage,
-    required TRexConfig config,
-    required Vector2 size,
+    // 精灵图位置列表
     required List<Vector2> frames,
+    // TRex 配置
+    required TRexConfig config,
   }) : super(
-          size: size, //,
+          size: Vector2(config.width, config.height),
           animation: SpriteAnimation.spriteList(
             frames
                 .map((vector) => Sprite(
                       spriteImage,
-                      srcSize: Vector2(config.width, config.height),
+                      srcSize: Vector2(87.0, 90.0),
                       srcPosition: vector,
                     ))
                 .toList(),
-            stepTime: 0.2,
+            stepTime: 0.06,
             loop: true,
           ),
         ) {
     this.showFor = showFor;
   }
-}
-
-class RunningTRex extends TRexStateAnimatedComponent {
-  RunningTRex(
-    Image spriteImage,
-    TRexConfig config,
-  ) : super(
-          showFor: [TRexStatus.running, TRexStatus.intro],
-          spriteImage: spriteImage,
-          size: Vector2(88.0, 90.0),
-          config: config,
-          frames: [Vector2(1514.0, 4.0), Vector2(1602.0, 4.0)],
-        );
-}
-
-class WaitingTRex extends TRexStateStillComponent {
-  WaitingTRex(Image spriteImage, TRexConfig config)
-      : super(
-          showFor: [TRexStatus.waiting],
-          config: config,
-          spriteImage: spriteImage,
-          srcPosition: Vector2(76.0, 6.0),
-        );
-}
-
-class JumpingTRex extends TRexStateStillComponent {
-  JumpingTRex(Image spriteImage, TRexConfig config)
-      : super(
-          showFor: [TRexStatus.jumping],
-          config: config,
-          spriteImage: spriteImage,
-          srcPosition: Vector2(1339.0, 6.0),
-        );
-}
-
-class SurprisedTRex extends TRexStateStillComponent {
-  SurprisedTRex(Image spriteImage, TRexConfig config)
-      : super(
-          showFor: [TRexStatus.crashed],
-          config: config,
-          spriteImage: spriteImage,
-          srcPosition: Vector2(1782.0, 6.0),
-        );
 }

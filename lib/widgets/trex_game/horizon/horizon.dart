@@ -4,6 +4,12 @@ import '../game.dart';
 import 'horizon_line.dart';
 
 class Horizon extends PositionComponent with HasGameRef<TRexGame> {
+  Horizon({
+    required this.deltaY,
+  });
+  // y 方向定位偏移量
+  final double deltaY;
+
   late final horizonLine = HorizonLine();
 
   @override
@@ -13,7 +19,8 @@ class Horizon extends PositionComponent with HasGameRef<TRexGame> {
 
   @override
   void update(double dt) {
-    y = (gameRef.size.y / 2) + 21.0;
+    // 这里要与小恐龙的初始状态对齐
+    y = (gameRef.size.y / 2) + deltaY;
     super.update(dt);
   }
 

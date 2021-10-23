@@ -8,9 +8,10 @@ import '../collision/collision_box.dart';
 class ObstacleType {
   const ObstacleType._internal(
     this.type, {
+    required this.spriteWidth,
+    required this.spriteHeight,
     required this.width,
     required this.height,
-    required this.y,
     required this.multipleSpeed,
     required this.minGap,
     required this.minSpeed,
@@ -21,9 +22,10 @@ class ObstacleType {
   });
 
   final String type;
+  final double spriteWidth;
+  final double spriteHeight;
   final double width;
   final double height;
-  final double y;
   final int multipleSpeed;
   final double minGap;
   final double minSpeed;
@@ -35,11 +37,12 @@ class ObstacleType {
 
   static final cactusSmall = ObstacleType._internal(
     "cactusSmall",
-    width: 34.0,
-    height: 70.0,
-    y: 20.0,
+    spriteWidth: 34.0,
+    spriteHeight: 70.0,
+    width: 17.0,
+    height: 35.0,
     multipleSpeed: 4,
-    minGap: 120.0,
+    minGap: 60.0,
     minSpeed: 0.0,
     collisionBoxes: <CollisionBox>[
       CollisionBox(
@@ -59,11 +62,12 @@ class ObstacleType {
 
   static final cactusLarge = ObstacleType._internal(
     "cactusLarge",
-    width: 50.0,
-    height: 100.0,
-    y: 1.0,
+    spriteWidth: 50.0,
+    spriteHeight: 100.0,
+    width: 25.0,
+    height: 50.0,
     multipleSpeed: 7,
-    minGap: 120.0,
+    minGap: 60.0,
     minSpeed: 0.0,
     collisionBoxes: <CollisionBox>[
       CollisionBox(
@@ -86,13 +90,13 @@ class ObstacleType {
       return Sprite(
         spriteImage,
         srcPosition: Vector2(446.0, 2.0),
-        srcSize: Vector2(width, height),
+        srcSize: Vector2(spriteWidth, spriteHeight),
       );
     }
     return Sprite(
       spriteImage,
       srcPosition: Vector2(652.0, 2.0),
-      srcSize: Vector2(width, height),
+      srcSize: Vector2(spriteWidth, spriteHeight),
     );
   }
 

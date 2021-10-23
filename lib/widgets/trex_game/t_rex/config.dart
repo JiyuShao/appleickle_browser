@@ -3,20 +3,15 @@ import 'package:flame/components.dart';
 import '../collision/collision_box.dart';
 
 class TRexConfig {
-  final double gravity = 1;
-
-  final double initialJumpVelocity = -15.0;
-  final double introDuration = 1500.0;
-  final double maxJumpHeight = 30.0;
-  final double minJumpHeight = 30.0;
-  final double speedDropCoefficient = 3.0;
+  // 重力加速度
+  final double gravity = 1.2;
+  // 起始点位置
   final double startXPos = 50.0;
-
-  final double height = 90.0;
-  final double width = 88.0;
-
-  final double heightDuck = 50.0;
-  final double widthDuck = 118.0;
+  // 从头跑到起始点的时间(s)
+  final double startDuration = 0.8;
+  // 实际展示的大小
+  final double width = 45.0;
+  final double height = 45.0;
 }
 
 final tRexCollisionBoxesDucking = <CollisionBox>[

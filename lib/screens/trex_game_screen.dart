@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-09-04 15:56:49
+ * @Last Modified time: 2021-10-23 13:11:12
  */
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -44,7 +44,6 @@ class _TRexGameScreenState extends State<TRexGameScreen> {
 
   // 触发游戏操作
   void triggerGameAction() {
-    print('asdf');
     game?.onAction();
   }
 
@@ -72,11 +71,10 @@ class _TRexGameScreenState extends State<TRexGameScreen> {
           alignment: Alignment.center,
           color: Colors.redAccent,
           child: AspectRatio(
-            aspectRatio: 1 / 1,
-            child: GameWidget(
-              game: game!,
-            ),
-          ),
+              aspectRatio: 1,
+              child: GameWidget(
+                game: game!,
+              )),
         ),
       ),
     );

@@ -45,7 +45,7 @@ class TRexGame extends BaseGame with TapDetector {
 
   /// children
   late final tRex = TRex();
-  late final horizon = Horizon();
+  late final horizon = Horizon(deltaY: 10.5 / 45 * tRex.config.height);
   late final gameOverPanel = GameOverPanel(spriteImage, GameOverConfig());
 
   @override
