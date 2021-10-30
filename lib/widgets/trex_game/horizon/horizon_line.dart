@@ -37,9 +37,9 @@ class HorizonLine extends PositionComponent with HasGameRef<TRexGame> {
   );
 
   // children
-  late final CloudManager cloudManager =
-      CloudManager(horizonConfig: HorizonConfig());
-  late final ObstacleManager obstacleManager = ObstacleManager(config);
+  late final CloudManager cloudManager = CloudManager(horizonConfig: config);
+  late final ObstacleManager obstacleManager =
+      ObstacleManager(horizonConfig: config);
 
   @override
   void onMount() {

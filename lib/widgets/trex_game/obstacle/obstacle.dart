@@ -11,11 +11,13 @@ import './config.dart';
 import './obstacle_type.dart';
 
 class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
-  ObstacleManager(this.hrizonConfig);
+  ObstacleManager({
+    required this.horizonConfig,
+  });
 
+  final HorizonConfig horizonConfig;
   ListQueue<ObstacleType> history = ListQueue();
   final ObstacleConfig config = ObstacleConfig();
-  final HorizonConfig hrizonConfig;
 
   @override
   void update(double dt) {
@@ -47,7 +49,7 @@ class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
       final obstacle = Obstacle(
         type: type,
         spriteImage: gameRef.spriteImage,
-        hrizonConfig: hrizonConfig,
+        horizonConfig: horizonConfig,
       );
 
       obstacle.x = gameRef.size.x;
@@ -83,12 +85,12 @@ class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
   Obstacle({
     required this.type,
     required Image spriteImage,
-    required HorizonConfig hrizonConfig,
+    required HorizonConfig horizonConfig,
   }) : super(
           sprite: type.getSprite(spriteImage),
         ) {
     // 设置障碍物位置
-    x = hrizonConfig.width;
+    x = horizonConfig.width;
 
     // 根据障碍物数量, 设置障碍物宽度
     width = type.width * internalSize;
