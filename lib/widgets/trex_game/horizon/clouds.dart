@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import '../custom/util.dart';
 import '../game.dart';
-import 'config.dart';
+import './config.dart';
 
-class Cloud extends SpriteComponent {
+class Cloud extends SpriteComponent with HasGameRef<TRexGame> {
   Cloud({
     required this.config,
     required Image spriteImage,
@@ -14,15 +14,17 @@ class Cloud extends SpriteComponent {
           config.maxCloudGap,
         ),
         super(
+          size: Vector2(config.width, config.height),
           sprite: Sprite(
             spriteImage,
             srcPosition: Vector2(166.0, 2.0),
-            srcSize: Vector2(config.width, config.height),
+            srcSize: Vector2(92.0, 28.0),
           ),
         );
 
   final CloudConfig config;
   final double cloudGap;
+  bool get allowNextCloud => (gameRef.size.x / 2 - x) > cloudGap;
 
   @override
   void update(double dt) {
@@ -30,7 +32,7 @@ class Cloud extends SpriteComponent {
     if (shouldRemove) {
       return;
     }
-    x -= (parent as CloudManager).cloudSpeed.ceil() * 50 * dt;
+    x -= (parent as CloudManager).cloudSpeed.ceil() * dt;
 
     if (!isVisible) {
       remove();
@@ -71,8 +73,7 @@ class CloudManager extends PositionComponent with HasGameRef<TRexGame> {
     addChild(cloud);
   }
 
-  double get cloudSpeed =>
-      horizonConfig.bgCloudSpeed / 1000 * gameRef.currentSpeed;
+  double get cloudSpeed => horizonConfig.bgCloudSpeed * gameRef.currentSpeed;
 
   @override
   void update(double dt) {
@@ -80,8 +81,7 @@ class CloudManager extends PositionComponent with HasGameRef<TRexGame> {
     final int numClouds = children.length;
     if (numClouds > 0) {
       final lastCloud = children.last as Cloud;
-      if (numClouds < horizonConfig.maxClouds &&
-          (gameRef.size.x / 2 - lastCloud.x) > lastCloud.cloudGap) {
+      if (numClouds < horizonConfig.maxClouds && lastCloud.allowNextCloud) {
         addCloud();
       }
     } else {
