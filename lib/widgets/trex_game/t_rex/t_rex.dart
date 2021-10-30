@@ -84,13 +84,13 @@ class TRex extends PositionComponent with HasGameRef<TRexGame> {
   @override
   void update(double dt) {
     if (status == TRexStatus.jumping) {
-      y += jumpVelocity;
-      jumpVelocity += gameRef.config.gravity;
+      y += dt * jumpVelocity;
+      jumpVelocity += dt * gameRef.tRex.config.gravity;
       if (y > groundYPos) {
         reset();
         jumpCount++;
       }
-    } else {
+    } else if (status != TRexStatus.crashed) {
       y = groundYPos;
     }
 
