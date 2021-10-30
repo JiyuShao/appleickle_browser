@@ -12,9 +12,7 @@ class ObstacleType {
     required this.spriteHeight,
     required this.width,
     required this.height,
-    required this.multipleSpeed,
     required this.minGap,
-    required this.minSpeed,
     this.numFrames,
     this.frameRate,
     this.speedOffset,
@@ -26,9 +24,7 @@ class ObstacleType {
   final double spriteHeight;
   final double width;
   final double height;
-  final int multipleSpeed;
   final double minGap;
-  final double minSpeed;
   final int? numFrames;
   final double? frameRate;
   final double? speedOffset;
@@ -41,9 +37,7 @@ class ObstacleType {
     spriteHeight: 70.0,
     width: 17.0,
     height: 35.0,
-    multipleSpeed: 4,
-    minGap: 60.0,
-    minSpeed: 0.0,
+    minGap: 120.0,
     collisionBoxes: <CollisionBox>[
       CollisionBox(
         position: Vector2(5.0, 7.0),
@@ -66,9 +60,7 @@ class ObstacleType {
     spriteHeight: 100.0,
     width: 25.0,
     height: 50.0,
-    multipleSpeed: 7,
-    minGap: 60.0,
-    minSpeed: 0.0,
+    minGap: 150.0,
     collisionBoxes: <CollisionBox>[
       CollisionBox(
         position: Vector2(0.0, 12.0),

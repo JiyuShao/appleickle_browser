@@ -212,11 +212,14 @@ class BrowserModel extends ChangeNotifier {
 
   Future<void> restore() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> browserData;
+    Map<String, dynamic> browserData = {};
     try {
-      browserData = await json.decode(prefs.getString("browser")!);
-    } catch (e) {
-      print(e);
+      String? browserJsonData = prefs.getString("browser");
+      if (browserJsonData != null) {
+        browserData = await json.decode(browserJsonData);
+      }
+    } catch (error) {
+      print('Browser restore 失败: $error');
       return;
     }
 

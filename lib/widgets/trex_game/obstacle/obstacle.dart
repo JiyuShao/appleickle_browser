@@ -7,8 +7,8 @@ import '../collision/collision_box.dart';
 import '../custom/util.dart';
 import '../horizon/config.dart';
 import '../game.dart';
-import 'config.dart';
-import 'obstacle_type.dart';
+import './config.dart';
+import './obstacle_type.dart';
 
 class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
   ObstacleManager(this.hrizonConfig);
@@ -24,41 +24,29 @@ class ObstacleManager extends PositionComponent with HasGameRef<TRexGame> {
       obstacle.y = y - obstacle.type.height * 0.75;
     }
 
-    final speed = gameRef.currentSpeed;
-
     if (children.isNotEmpty) {
       final lastObstacle = children.last as Obstacle?;
-
-      if (lastObstacle != null &&
-          !lastObstacle.followingObstacleCreated &&
-          lastObstacle.isVisible &&
-          (lastObstacle.x + lastObstacle.width + lastObstacle.gap) <
-              hrizonConfig.width) {
-        addNewObstacle(speed);
-        lastObstacle.followingObstacleCreated = true;
+      // 如果存在障碍物, 并且最后一个障碍物目前允许添加新的障碍物
+      if (lastObstacle != null && lastObstacle.allowNextObstacle) {
+        addNewObstacle();
       }
     } else {
-      addNewObstacle(speed);
+      addNewObstacle();
     }
 
     super.update(dt);
   }
 
-  void addNewObstacle(double speed) {
-    if (speed == 0) {
-      return;
-    }
+  void addNewObstacle() {
     final type = getRandomNum(0.0, 1.0).round() == 0
         ? ObstacleType.cactusSmall
         : ObstacleType.cactusLarge;
-    if (duplicateObstacleCheck(type) || speed < type.multipleSpeed) {
+    if (duplicateObstacleCheck(type)) {
       return;
     } else {
       final obstacle = Obstacle(
         type: type,
         spriteImage: gameRef.spriteImage,
-        speed: speed,
-        gapCoefficient: config.gapCoefficient,
         hrizonConfig: hrizonConfig,
       );
 
@@ -95,8 +83,6 @@ class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
   Obstacle({
     required this.type,
     required Image spriteImage,
-    required double speed,
-    required double gapCoefficient,
     required HorizonConfig hrizonConfig,
   }) : super(
           sprite: type.getSprite(spriteImage),
@@ -108,8 +94,8 @@ class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
     width = type.width * internalSize;
     height = type.height;
 
-    // 设置在屏幕上有障碍物的情况下, 与下一个障碍物的间隔
-    gap = computeGap(gapCoefficient, speed);
+    // 设置在屏幕上有障碍物的情况下, 与下一个障碍物的间隔, 这里传入当前速度和初始速度比
+    gap = computeGap();
 
     // 设置雪碧图的位置和大小
     final actualSrc = sprite!.src;
@@ -122,8 +108,6 @@ class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
   }
 
   final ObstacleConfig config = ObstacleConfig();
-
-  bool followingObstacleCreated = false;
 
   late double gap;
 
@@ -138,12 +122,17 @@ class Obstacle extends SpriteComponent with HasGameRef<TRexGame> {
     for (final box in type.collisionBoxes) CollisionBox.from(box)
   ];
 
+  // 当前是否可以添加新障碍物
+  bool get allowNextObstacle {
+    return (x + width + gap) < gameRef.size.x;
+  }
+
+  // 当前障碍物是否可以被销毁
   bool get isVisible => (x + width) > 0;
 
-  double computeGap(double gapCoefficient, double speed) {
-    final minGap = (width * speed * type.minGap * gapCoefficient).round() / 1;
-    final maxGap = (minGap * config.maxGapCoefficient).round() / 1;
-
+  double computeGap() {
+    final minGap = (type.minGap).round() / 1;
+    final maxGap = (minGap * config.gapCoefficient).round() / 1;
     return getRandomNum(minGap, maxGap);
   }
 

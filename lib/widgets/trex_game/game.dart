@@ -82,7 +82,7 @@ class TRexGame extends BaseGame with TapDetector {
     tRex.status = TRexStatus.running;
     status = TRexGameStatus.playing;
     tRex.hasPlayedIntro = true;
-    currentSpeed = config.speed;
+    currentSpeed = tRex.config.minSpeed;
   }
 
   void doGameOver() {
@@ -96,7 +96,7 @@ class TRexGame extends BaseGame with TapDetector {
     status = TRexGameStatus.playing;
     tRex.reset();
     horizon.reset();
-    currentSpeed = config.speed;
+    currentSpeed = tRex.config.minSpeed;
     gameOverPanel.visible = false;
     timePlaying = 0.0;
   }
@@ -120,8 +120,8 @@ class TRexGame extends BaseGame with TapDetector {
       final hasCollision = obstacles.isNotEmpty &&
           checkForCollision(obstacles.first as Obstacle, tRex);
       if (!hasCollision) {
-        if (currentSpeed < config.maxSpeed) {
-          currentSpeed += config.acceleration;
+        if (currentSpeed < tRex.config.maxSpeed) {
+          currentSpeed += dt * tRex.config.acceleration;
         }
       } else {
         doGameOver();
