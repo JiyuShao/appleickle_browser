@@ -31,11 +31,22 @@ class BrowserSettingsModel {
   bool debuggingEnabled;
 
   BrowserSettingsModel(
-      {this.searchEngine = GoogleSearchEngine, this.debuggingEnabled = false});
+      {this.searchEngine = BingSearchEngine, this.debuggingEnabled = false});
 
   BrowserSettingsModel copy() {
     return BrowserSettingsModel(
         searchEngine: searchEngine, debuggingEnabled: debuggingEnabled);
+  }
+
+  // 设置当前搜索引擎
+  void setSearchEngine(SearchEngineModel searchEngineModel) {
+    searchEngine = searchEngineModel;
+  }
+
+  // 选择下一个搜索引擎作为当前搜索引擎
+  SearchEngineModel getNextSearchEngine() {
+    var index = SearchEngines.indexOf(searchEngine);
+    return SearchEngines[(index + 1) % SearchEngines.length];
   }
 
   static BrowserSettingsModel? fromMap(Map<String, dynamic>? map) {
@@ -73,6 +84,41 @@ class BrowserModel extends ChangeNotifier {
     if (currentWebViewModel != null) {
       _currentWebViewModel = currentWebViewModel;
     }
+  }
+
+  // 获取所有的 tabs
+  UnmodifiableListView<WebViewTabScreen> get webViewTabs =>
+      UnmodifiableListView(_webViewTabs);
+
+  // 获取当前 tabs 数量
+  int getTabsLength() => _webViewTabs.length;
+
+  // 获取当前 tabs index
+  int getCurrentTabIndex() => _currentTabIndex;
+
+  // 获取当前 tab
+  WebViewTabScreen? getCurrentTab() =>
+      _currentTabIndex >= 0 ? _webViewTabs[_currentTabIndex] : null;
+
+  // 获取浏览器配置
+  BrowserSettingsModel getSettings() {
+    return _settings.copy();
+  }
+
+  // 更新配置
+  void updateSettings(BrowserSettingsModel settings) {
+    _settings = settings;
+    notifyListeners();
+  }
+
+  // 设置当前的 webview
+  void setCurrentWebViewModel(WebViewModel webViewModel) {
+    _currentWebViewModel = webViewModel;
+  }
+
+  void useNextSearchEngine() {
+    _settings.setSearchEngine(_settings.getNextSearchEngine());
+    notifyListeners();
   }
 
   // 添加新的 tab
@@ -151,6 +197,7 @@ class BrowserModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 关闭所有 tab
   void closeAllTabs() {
     _webViewTabs.clear();
     _currentTabIndex = -1;
@@ -159,35 +206,7 @@ class BrowserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 获取所有的 tabs
-  UnmodifiableListView<WebViewTabScreen> get webViewTabs =>
-      UnmodifiableListView(_webViewTabs);
-
-  // 获取当前 tabs 数量
-  int getTabsLength() => _webViewTabs.length;
-
-  // 获取当前 tabs index
-  int getCurrentTabIndex() => _currentTabIndex;
-
-  // 获取当前 tab
-  WebViewTabScreen? getCurrentTab() {
-    return _currentTabIndex >= 0 ? _webViewTabs[_currentTabIndex] : null;
-  }
-
-  // 获取浏览器配置
-  BrowserSettingsModel getSettings() {
-    return _settings.copy();
-  }
-
-  void updateSettings(BrowserSettingsModel settings) {
-    _settings = settings;
-    notifyListeners();
-  }
-
-  void setCurrentWebViewModel(WebViewModel webViewModel) {
-    _currentWebViewModel = webViewModel;
-  }
-
+// 上次保存
   DateTime _lastTrySave = DateTime.now();
   Timer? _timerSave;
   Future<void> save() async {
@@ -205,11 +224,13 @@ class BrowserModel extends ChangeNotifier {
     }
   }
 
+  // 保存配置
   Future<void> flush() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("browser", json.encode(toJson()));
   }
 
+  // 回复配置
   Future<void> restore() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> browserData = {};

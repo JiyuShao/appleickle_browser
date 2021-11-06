@@ -57,37 +57,37 @@ const BingSearchEngine = const SearchEngineModel(
     name: "Bing",
     url: "https://www.bing.com/",
     searchUrl: "https://www.bing.com/search?q=",
-    assetIcon: "assets/images/bing_logo.png");
+    assetIcon: "assets/images/search_engine/bing_logo.png");
 
 const BaiduSearchEngine = const SearchEngineModel(
     name: "Baidu",
     url: "https://www.baidu.com/",
     searchUrl: "https://www.baidu.com/s?wd=",
-    assetIcon: "assets/images/google_logo.png");
+    assetIcon: "assets/images/search_engine/baidu_logo.png");
 
 const GoogleSearchEngine = const SearchEngineModel(
     name: "Google",
     url: "https://www.google.com/",
     searchUrl: "https://www.google.com/search?q=",
-    assetIcon: "assets/images/google_logo.png");
+    assetIcon: "assets/images/search_engine/google_logo.png");
 
 const YahooSearchEngine = const SearchEngineModel(
     name: "Yahoo",
     url: "https://yahoo.com/",
     searchUrl: "https://search.yahoo.com/search?p=",
-    assetIcon: "assets/images/yahoo_logo.png");
+    assetIcon: "assets/images/search_engine/yahoo_logo.png");
 
 const DuckDuckGoSearchEngine = const SearchEngineModel(
     name: "DuckDuckGo",
     url: "https://duckduckgo.com/",
     searchUrl: "https://duckduckgo.com/?q=",
-    assetIcon: "assets/images/duckduckgo_logo.png");
+    assetIcon: "assets/images/search_engine/duckduckgo_logo.png");
 
 const EcosiaSearchEngine = const SearchEngineModel(
     name: "Ecosia",
     url: "https://www.ecosia.org/",
     searchUrl: "https://www.ecosia.org/search?q=",
-    assetIcon: "assets/images/ecosia_logo.png");
+    assetIcon: "assets/images/search_engine/ecosia_logo.png");
 
 const SearchEngines = <SearchEngineModel>[
   BingSearchEngine,
