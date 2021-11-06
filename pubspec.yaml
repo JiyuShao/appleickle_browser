@@ -58,6 +58,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/bottom_bar/
+    - assets/images/search_engine/
     - assets/images/webview_tab/
     - assets/images/trex_game/
 

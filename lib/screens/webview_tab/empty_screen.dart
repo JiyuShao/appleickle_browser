@@ -6,6 +6,8 @@
  * @Last Modified time: 2021-09-04 14:57:41
  */
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 import 'package:appleickle_browser/screens/search/search_hero.dart';
@@ -13,8 +15,6 @@ import 'package:appleickle_browser/widgets/bottom_bar/bottom_bar.dart'
     as bottom_bar;
 import 'package:appleickle_browser/widgets/page_scaffold/page_scaffold.dart';
 import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
-
-import '../trex_game_screen.dart';
 
 class EmptyScreen extends StatefulWidget {
   // Hero 动画相关 tag
@@ -29,65 +29,79 @@ class _EmptyScreenState extends State<EmptyScreen>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    BrowserModel browserModel =
+        Provider.of<BrowserModel>(context, listen: true);
+    BrowserSettingsModel settings = browserModel.getSettings();
     final appThemeModel = AppThemeModel.of(context);
     final mq = MediaQuery.of(context);
-    final topOffset = mq.size.height / 3;
+    final searchBarTopOffset = mq.size.height / 3;
 
     return PageScaffold(
       bottomArea: bottom_bar.BottomBar(
         heroTag: widget.heroTag,
         mode: bottom_bar.BottomBarMode.empty,
       ),
-      body: Stack(
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).pushNamed(
-                TRexGameScreen.routeName,
-              );
-            },
-            child: Align(
-              alignment: Alignment(0, -0.6),
-              child: Image.asset(
-                'assets/images/webview_tab/banner.png',
-                height: 120.0,
-                width: 120.0,
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(
+          appThemeModel.basePagePadding,
+          0,
+          appThemeModel.basePagePadding,
+          appThemeModel.basePagePadding,
+        ),
+        child: Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                browserModel.useNextSearchEngine();
+              },
+              // onDoubleTap: () {
+              //   Navigator.of(context).pushNamed(
+              //     TRexGameScreen.routeName,
+              //   );
+              // },
+              child: Container(
+                alignment: Alignment.topCenter,
+                padding: EdgeInsets.only(top: searchBarTopOffset - 90),
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight: 70,
+                    // maxWidth: 200,
+                  ),
+                  child: Image.asset(
+                    settings.searchEngine.assetIcon,
+                  ),
+                ),
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(
-              appThemeModel.basePagePadding,
-              topOffset,
-              appThemeModel.basePagePadding,
-              appThemeModel.basePagePadding,
-            ),
-            alignment: Alignment.topCenter,
-            child: SearchHero(
-              heroTag: widget.heroTag,
-              flightShuttleBuilder: (
-                BuildContext flightContext,
-                Animation<double> animation,
-                HeroFlightDirection flightDirection,
-                BuildContext fromHeroContext,
-                BuildContext toHeroContext,
-              ) {
-                return SearchBar(
+            Container(
+              alignment: Alignment.topCenter,
+              padding: EdgeInsets.only(top: searchBarTopOffset),
+              child: SearchHero(
+                heroTag: widget.heroTag,
+                flightShuttleBuilder: (
+                  BuildContext flightContext,
+                  Animation<double> animation,
+                  HeroFlightDirection flightDirection,
+                  BuildContext fromHeroContext,
+                  BuildContext toHeroContext,
+                ) {
+                  return SearchBar(
+                    searchScreenArguments:
+                        SearchScreenArguments(heroTag: widget.heroTag),
+                    enabled: false,
+                    autofocus: false,
+                  );
+                },
+                child: SearchBar(
                   searchScreenArguments:
                       SearchScreenArguments(heroTag: widget.heroTag),
                   enabled: false,
                   autofocus: false,
-                );
-              },
-              child: SearchBar(
-                searchScreenArguments:
-                    SearchScreenArguments(heroTag: widget.heroTag),
-                enabled: false,
-                autofocus: false,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

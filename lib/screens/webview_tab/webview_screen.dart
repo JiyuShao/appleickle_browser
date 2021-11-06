@@ -361,7 +361,8 @@ class WebViewScreenState extends State<WebViewScreen>
         bottom_bar.BottomBar(
           heroTag: widget.heroTag,
           mode: bottom_bar.BottomBarMode.webview,
-          title: widget.webViewModel.title ?? '',
+          title:
+              widget.webViewModel.title ?? widget.webViewModel.url.toString(),
           url: widget.webViewModel.url.toString(),
         ),
       ],
