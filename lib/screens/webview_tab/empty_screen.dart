@@ -51,25 +51,12 @@ class _EmptyScreenState extends State<EmptyScreen>
         child: Stack(
           children: [
             GestureDetector(
-              onTap: () {
-                browserModel.useNextSearchEngine();
-              },
-              // onDoubleTap: () {
-              //   Navigator.of(context).pushNamed(
-              //     TRexGameScreen.routeName,
-              //   );
-              // },
               child: Container(
                 alignment: Alignment.topCenter,
-                padding: EdgeInsets.only(top: searchBarTopOffset - 90),
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxHeight: 70,
-                    // maxWidth: 200,
-                  ),
-                  child: Image.asset(
-                    settings.searchEngine.assetIcon,
-                  ),
+                padding: EdgeInsets.only(top: searchBarTopOffset - 65),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  height: 40,
                 ),
               ),
             ),

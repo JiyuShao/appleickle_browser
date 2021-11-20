@@ -3,11 +3,12 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 17:53:00 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-08-14 17:05:30
+ * @Last Modified time: 2021-11-06 17:51:47
  */
 import 'package:flutter/material.dart';
 import 'package:snapping_sheet/snapping_sheet.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
+import 'package:appleickle_browser/widgets/popup/popup.dart';
 
 class PopupSheet extends StatelessWidget {
   // 页面元素
@@ -59,28 +60,8 @@ class PopupSheet extends StatelessWidget {
         }
       },
       grabbingHeight: 30,
-      grabbing: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: themeData.backgroundColor,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(25),
-              ),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 5,
-            width: 30,
-            decoration: BoxDecoration(
-              color: themeData.primaryColor,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-            ),
-          )
-        ],
+      grabbing: Popup(
+        grabbingHeight: 30,
       ),
       sheetAbove: SnappingSheetContent(
         sizeBehavior: SheetSizeFill(),

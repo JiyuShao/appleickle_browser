@@ -99,8 +99,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
       bottomBarItemList = [
         bottom_bar_model.BottomBarItemModel(
           index: 0,
-          imagePath: 'assets/images/bottom_bar/tabs.png',
-          selectedImagePath: 'assets/images/bottom_bar/tabs.png',
+          imagePath: 'assets/images/icons/tabs.png',
+          selectedImagePath: 'assets/images/icons/tabs.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
@@ -109,8 +109,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
         bottom_bar_model.BottomBarItemModel(
           index: 1,
           diableChange: true,
-          imagePath: 'assets/images/bottom_bar/settings.png',
-          selectedImagePath: 'assets/images/bottom_bar/settings.png',
+          imagePath: 'assets/images/icons/menu.png',
+          selectedImagePath: 'assets/images/icons/menu.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(
@@ -128,8 +128,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
       bottomBarItemList = [
         bottom_bar_model.BottomBarItemModel(
           index: 0,
-          imagePath: 'assets/images/bottom_bar/tabs.png',
-          selectedImagePath: 'assets/images/bottom_bar/tabs.png',
+          imagePath: 'assets/images/icons/tabs.png',
+          selectedImagePath: 'assets/images/icons/tabs.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
@@ -152,8 +152,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
         bottom_bar_model.BottomBarItemModel(
           index: 1,
           diableChange: true,
-          imagePath: 'assets/images/bottom_bar/settings.png',
-          selectedImagePath: 'assets/images/bottom_bar/settings.png',
+          imagePath: 'assets/images/icons/menu.png',
+          selectedImagePath: 'assets/images/icons/menu.png',
           isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(

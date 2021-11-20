@@ -6,6 +6,8 @@
  * @Last Modified time: 2021-08-14 16:02:57
  */
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/utils/logger.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
@@ -138,22 +140,40 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    BrowserModel browserModel =
+        Provider.of<BrowserModel>(context, listen: true);
+    BrowserSettingsModel settings = browserModel.getSettings();
     var themeData = Theme.of(context);
     // 如果是底部导航栏模式的话, 更改显示样式
-    var constraints = widget.mode == SearchBarMode.bottomBar
-        ? BoxConstraints(maxHeight: 35)
-        : BoxConstraints();
-    var borderRadius =
-        BorderRadius.circular(widget.mode == SearchBarMode.bottomBar ? 11 : 16);
-    var inputContentPadding = EdgeInsets.symmetric(
-        vertical: widget.mode == SearchBarMode.bottomBar ? 0 : 17.0,
-        horizontal: 14.0);
-    var textStyle = widget.mode == SearchBarMode.bottomBar
-        ? themeData.textTheme.caption
-        : themeData.textTheme.bodyText1;
-    var textAlign = widget.mode == SearchBarMode.bottomBar
-        ? TextAlign.center
-        : TextAlign.start;
+    var constraints = BoxConstraints();
+    var borderRadius = BorderRadius.circular(16);
+    var inputContentPadding =
+        EdgeInsets.symmetric(vertical: 17.0, horizontal: 14.0);
+    var textStyle = themeData.textTheme.bodyText1;
+    var textAlign = TextAlign.start;
+    // prefixIcon 图片大小需要用到 padding
+    // https://api.flutter.dev/flutter/material/InputDecoration/prefixIcon.html
+    GestureDetector? prefixIcon = GestureDetector(
+      onTap: () {
+        browserModel.useNextSearchEngine();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Image.asset(
+          settings.searchEngine.assetIcon,
+          height: 20,
+          width: 20,
+        ),
+      ),
+    );
+    if (widget.mode == SearchBarMode.bottomBar) {
+      constraints = BoxConstraints(maxHeight: 35);
+      borderRadius = BorderRadius.circular(11);
+      inputContentPadding = EdgeInsets.symmetric(vertical: 0, horizontal: 14.0);
+      textStyle = themeData.textTheme.caption;
+      textAlign = TextAlign.center;
+      prefixIcon = null;
+    }
 
     // 根据传入的初始值更新当前输入的值
     _checkPropsUpdate();
@@ -214,6 +234,7 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
                     borderSide:
                         BorderSide(width: 2.5, color: themeData.primaryColor),
                   ),
+                  prefixIcon: prefixIcon,
                   suffixIcon: widget.enabled
                       ? GestureDetector(
                           onTap: () {
