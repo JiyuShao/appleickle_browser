@@ -3,11 +3,10 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-09-04 15:30:08
+ * @Last Modified time: 2021-12-11 16:53:23
  */
 import 'package:flutter/material.dart';
-import 'package:appleickle_browser/screens/popup_menu/popup_menu_hero.dart';
-import 'package:appleickle_browser/screens/popup_menu/popup_menu_screen.dart';
+import 'package:appleickle_browser/screens/setting_menu/setting_menu_screen.dart';
 import 'package:appleickle_browser/screens/search/search_hero.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/screens/tabs_manager/tabs_manager_screen.dart';
@@ -72,13 +71,11 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
                   );
                 }
                 Widget currentResult = BottomBarItem(
-                    tabItemData: currentItem,
-                    handleTap: () {
-                      handleTapTab(currentItem);
-                    },
-                    handleChange: () {
-                      handleSwitchTab(currentItem);
-                    });
+                  tabItemData: currentItem,
+                  handleTap: () {
+                    handleTapTab(currentItem);
+                  },
+                );
                 // 使用自定义的渲染器
                 if (currentItem.builder != null) {
                   currentResult = currentItem.builder!(context, currentResult);
@@ -100,28 +97,21 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
         bottom_bar_model.BottomBarItemModel(
           index: 0,
           imagePath: 'assets/images/icons/tabs.png',
-          selectedImagePath: 'assets/images/icons/tabs.png',
-          isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
           },
         ),
         bottom_bar_model.BottomBarItemModel(
           index: 1,
-          diableChange: true,
           imagePath: 'assets/images/icons/menu.png',
-          selectedImagePath: 'assets/images/icons/menu.png',
-          isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(
-              PopupMenuScreen.routeName,
-              arguments: PopupMenuScreenArguments(
+              SettingMenuScreen.routeName,
+              arguments: SettingMenuScreenArguments(
                 heroTag: widget.heroTag,
               ),
             );
           },
-          builder: (_, child) =>
-              PopupMenuHero(heroTag: widget.heroTag, child: child),
         ),
       ];
     } else {
@@ -129,8 +119,6 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
         bottom_bar_model.BottomBarItemModel(
           index: 0,
           imagePath: 'assets/images/icons/tabs.png',
-          selectedImagePath: 'assets/images/icons/tabs.png',
-          isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
           },
@@ -151,45 +139,19 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
         ),
         bottom_bar_model.BottomBarItemModel(
           index: 1,
-          diableChange: true,
           imagePath: 'assets/images/icons/menu.png',
-          selectedImagePath: 'assets/images/icons/menu.png',
-          isSelected: false,
           handleTap: (_) {
             Navigator.of(context).pushNamed(
-              PopupMenuScreen.routeName,
-              arguments: PopupMenuScreenArguments(
+              SettingMenuScreen.routeName,
+              arguments: SettingMenuScreenArguments(
                 heroTag: widget.heroTag,
               ),
             );
           },
-          builder: (_, child) =>
-              PopupMenuHero(heroTag: widget.heroTag, child: child),
         ),
       ];
     }
     return bottomBarItemList;
-  }
-
-  // 切换 tab
-  void handleSwitchTab(bottom_bar_model.BottomBarItemModel currentTab) {
-    if (!mounted) return;
-    setState(() {
-      bottomBarItemList.forEach((tab) {
-        // 仅处理 tab 元素
-        if (!(tab is bottom_bar_model.BottomBarItemModel)) {
-          return;
-        }
-        tab.isSelected = false;
-        // 如果 tab 存在的情况下, 触发回调
-        if (currentTab.index == tab.index) {
-          tab.isSelected = true;
-          // 没有禁止更改的情况下, 触发BottomBarItem更改回调
-          if (!tab.diableChange && tab.handleChange != null)
-            tab.handleChange!(tab);
-        }
-      });
-    });
   }
 
   // 点击 tab
