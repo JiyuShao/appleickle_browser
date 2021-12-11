@@ -33,7 +33,6 @@ dependencies:
   provider: ^6.0.1
   fluttertoast: ^8.0.7
   snapping_sheet: ^3.1.0
-  flame: 1.0.0-rc9
 
 dev_dependencies:
   flutter_native_splash: ^1.2.0
@@ -60,7 +59,6 @@ flutter:
     - assets/images/icons/
     - assets/images/search_engine/
     - assets/images/webview_tab/
-    - assets/images/trex_game/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
