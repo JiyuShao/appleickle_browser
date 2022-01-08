@@ -63,9 +63,7 @@ List<PageRouteModel> routeListConfig = [
   PageRouteModel(
     path: SettingMenuScreen.routeName,
     routeGenerator: (settings) => PopupPageRoute(
-      pageBuilder: (_, __, ___) => SettingMenuScreen(
-        routeArgs: settings.arguments as SettingMenuScreenArguments,
-      ),
+      pageBuilder: (_, __, ___) => SettingMenuScreen(),
       settings: RouteSettings(name: SettingMenuScreen.routeName),
     ),
   ),

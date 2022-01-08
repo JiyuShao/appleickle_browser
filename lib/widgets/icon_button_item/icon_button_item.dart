@@ -1,31 +1,30 @@
 /*
- * 底部导航栏元素
+ * icon 按钮, 主要用于底部导航栏和设置页
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 19:18:14 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-12-11 17:03:32
+ * @Last Modified time: 2021-12-11 17:44:13
  */
 import 'package:flutter/material.dart';
-import 'package:appleickle_browser/models/bottom_bar_model.dart'
-    as tab_bar_model;
+import 'package:appleickle_browser/models/icon_button_item_model.dart';
 
-class BottomBarItem extends StatefulWidget {
-  const BottomBarItem({
+class IconButtonItem extends StatefulWidget {
+  const IconButtonItem({
     Key? key,
-    required this.tabItemData,
+    required this.model,
     required this.handleTap,
   }) : super(key: key);
 
   // 当前Tab数据
-  final tab_bar_model.BottomBarItemModel tabItemData;
+  final IconButtonItemModel model;
   // 触发点击逻辑
   final Function() handleTap;
 
   @override
-  _BottomBarItemState createState() => _BottomBarItemState();
+  _IconButtonItemState createState() => _IconButtonItemState();
 }
 
-class _BottomBarItemState extends State<BottomBarItem>
+class _IconButtonItemState extends State<IconButtonItem>
     with TickerProviderStateMixin {
   // 动画控制器
   late AnimationController animationController;
@@ -77,7 +76,7 @@ class _BottomBarItemState extends State<BottomBarItem>
                       parent: animationController,
                       curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn))),
               child: Image.asset(
-                widget.tabItemData.imagePath,
+                widget.model.imagePath,
                 width: 38,
                 height: 38,
               ),
