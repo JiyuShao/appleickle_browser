@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-06-29 18:10:43 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-12-11 16:53:23
+ * @Last Modified time: 2021-12-11 17:54:07
  */
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/screens/setting_menu/setting_menu_screen.dart';
@@ -11,10 +11,9 @@ import 'package:appleickle_browser/screens/search/search_hero.dart';
 import 'package:appleickle_browser/screens/search/search_screen.dart';
 import 'package:appleickle_browser/screens/tabs_manager/tabs_manager_screen.dart';
 import 'package:appleickle_browser/widgets/search_bar/search_bar.dart';
-import 'package:appleickle_browser/models/bottom_bar_model.dart'
-    as bottom_bar_model;
+import 'package:appleickle_browser/models/icon_button_item_model.dart';
 
-import 'bottom_bar_item.dart';
+import '../icon_button_item/icon_button_item.dart';
 
 enum BottomBarMode {
   // 空页面
@@ -46,7 +45,7 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   // 首页的Tab列表数据
-  late List bottomBarItemList;
+  late List bottomBarItemList = _getIconButtonItemList();
 
   @override
   void initState() {
@@ -62,16 +61,16 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
             child: Row(
-              children: _getBottomBarItemList().map((currentItem) {
-                // 允许渲染 BottomBarItem 或者自定义的组件
-                if (!(currentItem is bottom_bar_model.BottomBarItemModel) &&
+              children: bottomBarItemList.map((currentItem) {
+                // 允许渲染 IconButtonItem 或者自定义的组件
+                if (!(currentItem is IconButtonItemModel) &&
                     currentItem is Widget) {
                   return Expanded(
                     child: currentItem,
                   );
                 }
-                Widget currentResult = BottomBarItem(
-                  tabItemData: currentItem,
+                Widget currentResult = IconButtonItem(
+                  model: currentItem,
                   handleTap: () {
                     handleTapTab(currentItem);
                   },
@@ -91,35 +90,29 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
     );
   }
 
-  List _getBottomBarItemList() {
+  List _getIconButtonItemList() {
     if (widget.mode == BottomBarMode.empty) {
       bottomBarItemList = [
-        bottom_bar_model.BottomBarItemModel(
-          index: 0,
+        IconButtonItemModel(
           imagePath: 'assets/images/icons/tabs.png',
-          handleTap: (_) {
+          handleTap: () {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
           },
         ),
-        bottom_bar_model.BottomBarItemModel(
-          index: 1,
+        IconButtonItemModel(
           imagePath: 'assets/images/icons/menu.png',
-          handleTap: (_) {
+          handleTap: () {
             Navigator.of(context).pushNamed(
               SettingMenuScreen.routeName,
-              arguments: SettingMenuScreenArguments(
-                heroTag: widget.heroTag,
-              ),
             );
           },
         ),
       ];
     } else {
       bottomBarItemList = [
-        bottom_bar_model.BottomBarItemModel(
-          index: 0,
+        IconButtonItemModel(
           imagePath: 'assets/images/icons/tabs.png',
-          handleTap: (_) {
+          handleTap: () {
             Navigator.of(context).pushNamed(TabsManagerScreen.routeName);
           },
         ),
@@ -137,15 +130,11 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
             autofocus: false,
           ),
         ),
-        bottom_bar_model.BottomBarItemModel(
-          index: 1,
+        IconButtonItemModel(
           imagePath: 'assets/images/icons/menu.png',
-          handleTap: (_) {
+          handleTap: () {
             Navigator.of(context).pushNamed(
               SettingMenuScreen.routeName,
-              arguments: SettingMenuScreenArguments(
-                heroTag: widget.heroTag,
-              ),
             );
           },
         ),
@@ -155,8 +144,8 @@ class _BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   }
 
   // 点击 tab
-  void handleTapTab(bottom_bar_model.BottomBarItemModel currentTab) {
+  void handleTapTab(IconButtonItemModel currentTab) {
     if (!mounted) return;
-    if (currentTab.handleTap != null) currentTab.handleTap!(currentTab);
+    if (currentTab.handleTap != null) currentTab.handleTap!();
   }
 }
