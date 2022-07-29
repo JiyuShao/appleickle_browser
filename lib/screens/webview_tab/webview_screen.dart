@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -40,7 +39,7 @@ class WebViewScreenState extends State<WebViewScreen>
 
   @override
   void initState() {
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
@@ -52,7 +51,7 @@ class WebViewScreenState extends State<WebViewScreen>
     _httpAuthUsernameController.dispose();
     _httpAuthPasswordController.dispose();
 
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
@@ -247,7 +246,7 @@ class WebViewScreenState extends State<WebViewScreen>
             shouldOverrideUrlLoading: (controller, navigationAction) async {
               return NavigationActionPolicy.ALLOW;
             },
-            onDownloadStart: (controller, url) async {},
+            onDownloadStartRequest: (controller, url) async {},
             onReceivedServerTrustAuthRequest: (controller, challenge) async {
               var sslError = challenge.protectionSpace.sslError;
               if (sslError != null &&
@@ -316,7 +315,7 @@ class WebViewScreenState extends State<WebViewScreen>
     </body>
       """,
                 baseUrl: errorUrl,
-                androidHistoryUrl: errorUrl,
+                historyUrl: errorUrl,
               );
 
               widget.webViewModel.url = url;

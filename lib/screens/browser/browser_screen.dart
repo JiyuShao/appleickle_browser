@@ -2,14 +2,15 @@
  * 浏览器应用入口页面
  * @Author: Jiyu Shao 
  * @Date: 2021-08-21 17:42:50 
- * @Last Modified by:   Jiyu Shao 
- * @Last Modified time: 2021-08-21 17:42:50 
+ * @Last Modified by: Jiyu Shao
+ * @Last Modified time: 2022-07-29 15:07:57
  */
 import 'dart:async';
 
 import 'package:appleickle_browser/models/browser_model.dart';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/webview_model.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -78,10 +79,17 @@ class _BrowserScreenState extends State<BrowserScreen>
             currentWebViewTab?.webViewModel.webViewController;
 
         // 如果当前 webview 可以后退的话, 优先后退
-        if (_webViewController != null &&
-            await _webViewController.canGoBack()) {
-          _webViewController.goBack();
-          return false;
+        if (_webViewController != null) {
+          if (await _webViewController.canGoBack()) {
+            // get the webview history
+            WebHistory? webHistory =
+                await _webViewController.getCopyBackForwardList();
+            // if webHistory.currentIndex corresponds to 1 or 0
+            if (webHistory?.currentIndex as int > 1) {
+              _webViewController.goBack();
+              return false;
+            }
+          }
         }
 
         // 如果当前 tab 没有可回退的页面的话

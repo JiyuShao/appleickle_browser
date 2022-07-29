@@ -3,7 +3,7 @@
  * @Author: Jiyu Shao 
  * @Date: 2021-07-02 17:39:20 
  * @Last Modified by: Jiyu Shao
- * @Last Modified time: 2021-08-14 16:02:57
+ * @Last Modified time: 2022-07-29 15:17:19
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -92,7 +92,7 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // 添加键盘的监听
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -108,7 +108,7 @@ class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
     // Clean up the focus node when the Form is disposed.
     _focusNode.dispose();
     // 取消键盘的监听
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

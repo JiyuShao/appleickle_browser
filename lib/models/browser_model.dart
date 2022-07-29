@@ -20,7 +20,6 @@ import 'dart:math';
 
 import 'package:appleickle_browser/utils/logger.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:appleickle_browser/screens/webview_tab/webview_tab_screen.dart';
 import 'webview_model.dart';

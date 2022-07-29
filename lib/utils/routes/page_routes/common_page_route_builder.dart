@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:appleickle_browser/models/app_theme_model.dart';
 

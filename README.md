@@ -1,16 +1,29 @@
 # appleickle_browser
 
-A new Flutter project.
+## 简介
 
-## Getting Started
+本项目是一个跨端浏览器项目，主要技术栈为：
 
-This project is a starting point for a Flutter application.
+- flutter 3.0.4
+- flutter_inappwebview
 
-A few resources to get you started if this is your first Flutter project:
+## 快速开始
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+在运行以下命令前请先设置好 `flutter devices`
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+# 安装依赖
+flutter pub get
+
+# 在设备上运行代码
+flutter run
+```
+
+## 截图展示
+
+<div>
+    <img src="./assets/docs/empty_screen.png" width="250" alt="empty_screen" />
+    <img src="./assets/docs/search_screen.png" width="250" alt="search_screen" />
+    <img src="./assets/docs/webview_screen.png" width="250" alt="webview_screen" />
+    <img src="./assets/docs/tab_manager_screen.png" width="250" alt="tab_manager_screen" />
+</div>

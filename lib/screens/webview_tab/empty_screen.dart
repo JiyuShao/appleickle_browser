@@ -31,6 +31,7 @@ class _EmptyScreenState extends State<EmptyScreen>
   Widget build(BuildContext context) {
     BrowserModel browserModel =
         Provider.of<BrowserModel>(context, listen: true);
+    // ignore: unused_local_variable
     BrowserSettingsModel settings = browserModel.getSettings();
     final appThemeModel = AppThemeModel.of(context);
     final mq = MediaQuery.of(context);
